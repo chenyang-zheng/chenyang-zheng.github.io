@@ -32,17 +32,16 @@ Prompt Optimization, concise prompt with clear instruction on generation rules l
     
 
     
-      <link rel="canonical" href="http://localhost:1313/posts/day2/">
+      <link rel="canonical" href="http://localhost:1313/day2/">
     
 
-    <meta property="og:url" content="http://localhost:1313/posts/day2/">
+    <meta property="og:url" content="http://localhost:1313/day2/">
   <meta property="og:site_name" content="Chenyang&#39;s Eureka">
   <meta property="og:title" content="New COT Evaluation">
   <meta property="og:description" content="Optimized query with qa_cot_few_shot working good, and better than original staging and direct answer ones. However it’s hallucinating. Why’s that, how to prevent them. To prevent hallucination from LLM, there are few ways to do it:
 Prompt Optimization, concise prompt with clear instruction on generation rules like Apple does Post-process, filter out hallucinated answers by checking the answer with a pre-trained model like RAG or BART(This is costly with low priority) Use a more powerful model like Llama 3.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
     <meta property="article:published_time" content="2024-08-27T20:02:20+08:00">
     <meta property="article:modified_time" content="2024-08-27T20:02:20+08:00">
 
@@ -63,8 +62,6 @@ Prompt Optimization, concise prompt with clear instruction on generation rules l
   <body class="ma0 avenir bg-near-white">
 
     
-   
-  
 
   <header>
     <div class="bg-black">
@@ -92,43 +89,17 @@ Prompt Optimization, concise prompt with clear instruction on generation rules l
   </header>
 
 
-
     <main class="pb7" role="main">
       
-  
-  <article class="flex-l flex-wrap justify-between mw8 center ph3">
-    <header class="mt4 w-100">
-      <aside class="instapaper_ignoref b helvetica tracked ttu">
-          
-        Posts
-      </aside>
-      
-
-
-
-
-
-
-
-
-
-
-  <div id="sharing" class="mt3 ananke-socials">
-    
-  </div>
-
-
-      <h1 class="f1 athelas mt3 mb1">New COT Evaluation</h1>
-      
-      
-      
-      <time class="f6 mv4 dib tracked" datetime="2024-08-27T20:02:20+08:00">August 27, 2024</time>
-      
-
-      
-      
-    </header>
-    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>Optimized query with qa_cot_few_shot working good, and better than original staging and direct answer ones.
+  <div class="flex-l mt2 mw8 center">
+    <article class="center cf pv5 ph3 ph4-ns mw7">
+      <header>
+        <h1 class="f1">
+          New COT Evaluation
+        </h1>
+      </header>
+      <div class="nested-copy-line-height lh-copy f4 nested-links mid-gray">
+        <p>Optimized query with qa_cot_few_shot working good, and better than original staging and direct answer ones.
 However it&rsquo;s hallucinating. Why&rsquo;s that, how to prevent them.
 To prevent hallucination from LLM, there are few ways to do it:</p>
 <ul>
@@ -170,23 +141,10 @@ The reason of checking False negative is to see if the model is too conservative
 <li><input disabled="" type="checkbox"> Sort out the hallucinated answers.</li>
 <li><input disabled="" type="checkbox"> understanding why hallucination</li>
 </ul>
-<ul class="pa0">
-  
-</ul>
-<div class="mt6 instapaper_ignoref">
-      
-      
+
       </div>
-    </div>
-
-    <aside class="w-30-l mt6-l">
-
-
-
-
-</aside>
-
-  </article>
+    </article>
+  </div>
 
     </main>
     <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">

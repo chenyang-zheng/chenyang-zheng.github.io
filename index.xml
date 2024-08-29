@@ -6,7 +6,21 @@
     <description>Recent content on Chenyang&#39;s Eureka</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate></lastBuildDate>
+    <lastBuildDate>Wed, 28 Aug 2024 20:02:20 +0800</lastBuildDate>
     <atom:link href="https://sherl0cked.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>TODO List</title>
+      <link>https://sherl0cked.github.io/posts/todolist/</link>
+      <pubDate>Wed, 28 Aug 2024 20:02:20 +0800</pubDate>
+      <guid>https://sherl0cked.github.io/posts/todolist/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Prompt Engineering for LLM Cot</title>
+      <link>https://sherl0cked.github.io/posts/my-first-post/</link>
+      <pubDate>Mon, 26 Aug 2024 20:02:20 +0800</pubDate>
+      <guid>https://sherl0cked.github.io/posts/my-first-post/</guid>
+      <description>Some thoughts on Prompt Optimization and Instructional Design for LLM CoT:&#xA;F(Instruction) = P(Chain of Thought) # instruction and rules are designed for LLM CoT&#xA;F(CoT) = P(thinking | Instruction) # CoT is the chain of thought, the thinking process of the model&#xA;F(Cot) = F(thinking) = P(answer) # After sorted CoT process based on the instruction, the final answer is generated&#xA;TODO: Task 1 </description>
+    </item>
   </channel>
 </rss>
