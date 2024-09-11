@@ -1,7 +1,7 @@
 {
 	"version": 3,
 	"file": "main.css",
-	"sourceRoot": "/Users/chenyzhe/devnet/SherL0cked.github.io",
+	"sourceRoot": "/Users/chenyzhe/go/src/wwwin-github.cisco.com/DevNet/chenyzhe.github.io",
 	"sources": [
 		"ananke/css/main.css"
 	],
