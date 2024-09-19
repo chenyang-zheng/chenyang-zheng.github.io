@@ -2,38 +2,52 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Chenyang&#39;s Eureka</title>
-    <link>https://sherl0cked.github.io/</link>
+    <link>https://chenyang-zheng.github.io/</link>
     <description>Recent content on Chenyang&#39;s Eureka</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 11 Sep 2024 20:02:20 +0800</lastBuildDate>
-    <atom:link href="https://sherl0cked.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://chenyang-zheng.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>OpenAI-o1</title>
+      <link>https://chenyang-zheng.github.io/posts/openai-o1/</link>
+      <pubDate>Wed, 11 Sep 2024 20:02:20 +0800</pubDate>
+      <guid>https://chenyang-zheng.github.io/posts/openai-o1/</guid>
+      <description>Citation: https://mp.weixin.qq.com/s/FXGdJA8OyZvLl89rXJiyAQ&#xA;GPT 4o的问题在于本身大模型的智力水平还不够高，所以做不了复杂任务，导致很多应用场景无法实用化，而指望靠图片、视频这类新模态数据大幅提升大模型智力水平是不太可能的，尽管确实能拓展更丰富的多模态应用场景，但这类数据弥补的更多是大模型对外在多模态世界的感知能力，而不是认知能力。&#xA;4o的智力水平实际上也在提升，比如ChatGPT-4o-latest (2024-08-08)的推理明显要比GPT-4o-2024-05-13强很多。 而1o有点像是instruct with CoT datasets, 专长推理。可能作为未来多模态模型中的推理base模型，base reasoning model -&amp;gt; text, image, audio&#xA;OpenAI o1的做法本质上是COT的自动化。 从用户提出的问题形成树的根结点出发，最终走到给出正确答案，可以想像成类似AlphaGo下棋，形成了巨大的由COT具体步骤构成的树形搜索空间，这里COT的具体步骤的组合空间是巨大的，人写的COT未必最优。如果我们有大量逻辑数据，是由&amp;lt;问题，明确的正确答案&amp;gt;构成，则通过类似AlphaGo的Monte Carlo Tree Search（MCTS）搜索+强化学习，确实是可以训练大模型快速找到通向正确答案的COT路径的。&#xA;这里的想法和Plan Search中类似，首先生成可能的推理节点，每一个节点可能包含对于细分任务的思维链中的步骤。而使用广度搜索来进行任务的泛化，也即是路径依赖。 其中一个问题是，这里的CoT是从哪来。如果是类似于人工标注后的RLHF，那么必然对任务的广度有所局限。&#xA;如果通过基座模型Plan把一个复杂任务分解为10个步骤，哪怕单个步骤的正确率高达95%，要想最后把任务做对，10个环节的准确率连乘下来，最终的正确率只有59%，惨不忍睹。&#xA;实际的问题，但是COT和拆分成类似langgraph的node还是有所区别。不是简单的独立事件。思维链更像是narrow down的过程，将事情缩小到指定的集合中做分类或者回归。这里的描述更像是多个独立的分类问题。&#xA;o1的Model Card专门测试了Agent任务，对于简单和中等难度的Agent任务有明显提升，但是复杂的、环节多的任务准确率还是不太高。&#xA;这里的应该代表了o1内在的流程，divide&amp;amp;conquer问题。如果在一个思维链中无法解决时，需要拆分成多个。因此简单问题在一个思维链中提升因为基准性能的提升，而多个思维链需要考虑到概率的乘数。&#xA;大语言模型最基础的能力有三种：语言理解和表达能力、世界知识存储和查询能力以及逻辑推理能力（包括数学、Coding、推理等理科能力，这里Coding有一定的特殊性，是语言能力和逻辑掺杂在一起的混合能力，Coding从语言角度可以看成一种受限的自然语言，但是混杂着复杂的内在逻辑问题。从语言角度看，Coding貌似是容易解决的，从逻辑角度看又相对难解决。总之，Coding目前看是除了语言理解外，大模型做得最好的方向）&#xA;逻辑推理能力是哲学逻辑中的内核，是思维本身。 语言表达能力是思维的出口，而上层的表达可以是NLP，Audio或者是Video。 世界知识存储和查询能力是代表了模型的一个是压缩能力，还有一个是本身的回归能力。&#xA;但幻觉问题目前无法根治，这是制约各种应用的硬伤之一&#xA;这和我之前的假设有所出入，当然实现起来是MLP本身的掣肘，比如dropout带来的信息丢失。但幻觉应该是可以通过调节attention中的位置，比如Q-KV匹配时，让Q和KV的相关性尽可能最大化。 我们能够从数学上的提升得到一些收获，比如数学处理的概率问题。数据问题的优势在于它的线性和可复现，因此可以通过不断的迭代和微调来提高。 而更广阔的问题因为没有足够的ground truth，会导致模型无法学到真正核心的eureka point.&#xA;而为啥逻辑推理能力最难提升？因为能体现这方面的自然数据（代码、数学题、物理题、科学论文等）在训练数据中比例太低，自然大模型就学不好，尽管通过不断增加数据，能增加逻辑推理方面数据的绝对数量，但因为占比太少，这方面提升的效果和增加的总体数据规模就不成比例，效果也不会太明显，就体现在逻辑推理能力Scaling law看上去的放缓。这是很自然的。这也是为何现在为了提高模型逻辑能力，往往在预训练阶段和Post-training阶段，大幅增加逻辑推理数据占比的原因，且是有成效的。&#xA;Model card: https://assets.ctfassets.net/kftzwdyauwt9/67qJD51Aur3eIc96iOfeOP/71551c3d223cd97e591aa89567306912/o1_system_card.pdf&#xA;技术要点有三：&#xA;后训练扩展律 Post-Training Scaling Laws 已经出现，并且 Post-Training Scaling Laws 为上述技术路径的成功提供了有力支持。&#xA;模型学习的是产生合理推理的过程，MCTS 在其中的作用是诱导合理推理过程的产生或构建相应的偏序对形成细粒度奖励信号，而非直接搜索过程和最终答案。&#xA;模型的 BootStrap 有助于构建新的高质量数据，并且新的 Rationales 数据促进了模型进一步提升能力。&#xA;RLHF实际上也是商用模型能和开源的基准模型拉开差距的地方，展示了财力和算力。&#xA;第三点中的bootstrap指的是模型通过自我迭代来生成新的高质量训练数据的过程。具体来说：&#xA;模型首先使用现有的训练数据进行训练 然后利用训练好的模型来生成新的数据，特别是推理过程(Rationales) 这些新生成的高质量数据被加入到训练集中 模型使用扩充后的数据集重新训练，进一步提升能力 重复这个过程，不断改进模型性能 这种方法允许模型逐步提升自身的推理能力，特别是在逻辑推理等难以获得大量高质量训练数据的领域。通过不断生成和利用新的Rationales数据，模型可以持续优化其推理过程和结果质量。</description>
+    </item>
     <item>
       <title>Plan Search</title>
-      <link>https://sherl0cked.github.io/posts/plan_search/</link>
+      <link>https://chenyang-zheng.github.io/posts/plan_search/</link>
       <pubDate>Wed, 11 Sep 2024 20:02:20 +0800</pubDate>
-      <guid>https://sherl0cked.github.io/posts/plan_search/</guid>
-      <description>目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。&#xA;经过特别指令调整的模型在只生成一个答案的情况下（pass@1）通常比基础模型表现得好很多，但当需要生成多个答案时，这种优势就不明显了.&#xA;模型在生成答案时缺乏多样性，这对于搜索的效果非常不利。特别是在极端情况，比如采用「贪心解码」，模型给出的答案会非常相似，因为它们是从模型中重复抽取的。这种情况下，即使模型花费更多推理时间，也难以获得更好的搜索结果。&#xA;为什么多样性很重要？因为搜索的目的是找到最佳答案，而不是找到一个答案。如果模型给出的答案都是雷同的，那么搜索的结果就会受到很大的影响。 多样性和搜索结果的关系：多样性可以补充更多角度，而这些更多角度可以更全面的了解问题，从广度上来说，多样性可以提供更多的选择，从深度上来说，多样性可以提供更多的细节。但是通常广度与深度是相互矛盾的，所以多样性的提升需要在广度与深度之间取得平衡。&#xA;通行的大模型排行榜，例如例如 LMSYS Chatbot Arena、LiveCodeBench、OpenLLMLeaderboard&#xA;首先，研究人员发现，如果给模型一些简单的草图（这些草图是从已经能解决问题的代码中「回译」而来），模型就能根据这些草图写出正确的最终程序。其次，研究人员还发现，如果让模型在尝试解决问题之前，先在 LiveCodeBench 上想出一些点子（这个过程叫做 IdeaSearch / 思路搜索），然后看看模型能不能用这些点子解决问题。&#xA;先做路径规划，和蒙特卡洛树搜索的思路有点像，但是这个思路是在生成答案之前，而不是在生成答案的过程中。 这和我的想法类似, cot-and-prompt, 正确的COT可以引导模型生成正确的答案。那从泛化的角度来说即是如何对于不同问题，找到合适的COT。 有点回归到了auto-learning的问题上。&#xA;结果发现，模型要么完全解决不了问题（准确度为 0%），要么就能完美解决问题（准确度为 100%）。&#xA;路径依赖,有点反直觉。因为0%和100%作为两个极端，往往路径中的偏差应该是个别节点的误差不足以导致整体差距这么极端。&#xA;不同于之前的搜索方法（通常是搜索单个 token、代码行甚至整个程序）不一样，规划搜索是搜索解决当前问题的可能规划。这里，规划（plan）的定义是：有助于解决某个特定问题的高层级观察和草案的集合。&#xA;强化学习的做法, 能应用在泛化的场景下吗。比如在特定范围内，AlphaGo之于围棋，个别程序语言的CodeGen的路径可能是相似的。 Assumption: 泛化也许可以用LLM本身的能力来做路径，类似于Anthropic的metaprompt，用来针对于不同的应用场景生成对应的COT。当然这里的前置条件是LLM本身的知识体系中有，且足够精准。也许某种finetuned Plan LLM?&#xA;在这项研究中，该团队探索了多种不同方法，包括重复采样（Repeated Sampling）、思路搜索（IdeaSearch）以及新提出的规划搜索（PlanSearch）。其中前两种方法顾名思义，比较直观，这里我们重点关注新提出的规划搜索。 做法还是类似于(Code)Agent的方法论, Use hashmap≈Use Memory. Greedy Search≈Tool.&#xA;通过提示来获取观察 推导新的观察 将观察变成代码 具体来说，对于每个叶节点，将所有观察以及原始问题 P 放入提示词来调用 LLM，以便生成问题 P 的自然语言解决方案。为了提升多样性，对于每个生成的思路，该团队通过假设该思路是错误的来生成一个额外的思路，并要求 LLM 给出批评 / 反馈，从而将提议的思路翻倍了。 然后，再将这些自然语言解决方案转译成伪代码；再把这些伪代码转译成真正的 Python 代码。&#xA;通过反复的rewrite来保证多样性吗。 也许本身在即使没有使用路径规划（规划和思路搜索）的情况下，也可以通过rewrite来提高回答质量。&#xA;在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.4%）以及标准的 best-of-n 采样方法的分数（pass@200 = 60.</description>
+      <guid>https://chenyang-zheng.github.io/posts/plan_search/</guid>
+      <description>Citation: https://mp.weixin.qq.com/s/xhV9HoeEP22RjuWTjgbPqg&#xA;目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。&#xA;经过特别指令调整的模型在只生成一个答案的情况下（pass@1）通常比基础模型表现得好很多，但当需要生成多个答案时，这种优势就不明显了.&#xA;模型在生成答案时缺乏多样性，这对于搜索的效果非常不利。特别是在极端情况，比如采用「贪心解码」，模型给出的答案会非常相似，因为它们是从模型中重复抽取的。这种情况下，即使模型花费更多推理时间，也难以获得更好的搜索结果。&#xA;为什么多样性很重要？因为搜索的目的是找到最佳答案，而不是找到一个答案。如果模型给出的答案都是雷同的，那么搜索的结果就会受到很大的影响。 多样性和搜索结果的关系：多样性可以补充更多角度，而这些更多角度可以更全面的了解问题，从广度上来说，多样性可以提供更多的选择，从深度上来说，多样性可以提供更多的细节。但是通常广度与深度是相互矛盾的，所以多样性的提升需要在广度与深度之间取得平衡。&#xA;通行的大模型排行榜，例如例如 LMSYS Chatbot Arena、LiveCodeBench、OpenLLMLeaderboard&#xA;首先，研究人员发现，如果给模型一些简单的草图（这些草图是从已经能解决问题的代码中「回译」而来），模型就能根据这些草图写出正确的最终程序。其次，研究人员还发现，如果让模型在尝试解决问题之前，先在 LiveCodeBench 上想出一些点子（这个过程叫做 IdeaSearch / 思路搜索），然后看看模型能不能用这些点子解决问题。&#xA;先做路径规划，和蒙特卡洛树搜索的思路有点像，但是这个思路是在生成答案之前，而不是在生成答案的过程中。 这和我的想法类似, cot-and-prompt, 正确的COT可以引导模型生成正确的答案。那从泛化的角度来说即是如何对于不同问题，找到合适的COT。 有点回归到了auto-learning的问题上。&#xA;结果发现，模型要么完全解决不了问题（准确度为 0%），要么就能完美解决问题（准确度为 100%）。&#xA;路径依赖,有点反直觉。因为0%和100%作为两个极端，往往路径中的偏差应该是个别节点的误差不足以导致整体差距这么极端。&#xA;不同于之前的搜索方法（通常是搜索单个 token、代码行甚至整个程序）不一样，规划搜索是搜索解决当前问题的可能规划。这里，规划（plan）的定义是：有助于解决某个特定问题的高层级观察和草案的集合。&#xA;强化学习的做法, 能应用在泛化的场景下吗。比如在特定范围内，AlphaGo之于围棋，个别程序语言的CodeGen的路径可能是相似的。 Assumption: 泛化也许可以用LLM本身的能力来做路径，类似于Anthropic的metaprompt，用来针对于不同的应用场景生成对应的COT。当然这里的前置条件是LLM本身的知识体系中有，且足够精准。也许某种finetuned Plan LLM?&#xA;在这项研究中，该团队探索了多种不同方法，包括重复采样（Repeated Sampling）、思路搜索（IdeaSearch）以及新提出的规划搜索（PlanSearch）。其中前两种方法顾名思义，比较直观，这里我们重点关注新提出的规划搜索。 做法还是类似于(Code)Agent的方法论, Use hashmap≈Use Memory. Greedy Search≈Tool.&#xA;通过提示来获取观察 推导新的观察 将观察变成代码 具体来说，对于每个叶节点，将所有观察以及原始问题 P 放入提示词来调用 LLM，以便生成问题 P 的自然语言解决方案。为了提升多样性，对于每个生成的思路，该团队通过假设该思路是错误的来生成一个额外的思路，并要求 LLM 给出批评 / 反馈，从而将提议的思路翻倍了。 然后，再将这些自然语言解决方案转译成伪代码；再把这些伪代码转译成真正的 Python 代码。&#xA;通过反复的rewrite来保证多样性吗。 也许本身在即使没有使用路径规划（规划和思路搜索）的情况下，也可以通过rewrite来提高回答质量。&#xA;在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.</description>
     </item>
     <item>
       <title>发现的乐趣 - 费曼</title>
-      <link>https://sherl0cked.github.io/read/%E5%8F%91%E7%8E%B0%E7%9A%84%E4%B9%90%E8%B6%A3/</link>
+      <link>https://chenyang-zheng.github.io/read/%E5%8F%91%E7%8E%B0%E7%9A%84%E4%B9%90%E8%B6%A3/</link>
       <pubDate>Mon, 02 Sep 2024 20:02:20 +0800</pubDate>
-      <guid>https://sherl0cked.github.io/read/%E5%8F%91%E7%8E%B0%E7%9A%84%E4%B9%90%E8%B6%A3/</guid>
+      <guid>https://chenyang-zheng.github.io/read/%E5%8F%91%E7%8E%B0%E7%9A%84%E4%B9%90%E8%B6%A3/</guid>
       <description>但是，我们必须接受一些大自然已有的原子排列形式。我们不可能拥有，比如说，像“棋盘”那样的一种排列，其中杂质相距正好是1000埃，或者是其他什么特定的排列方式。 芯片制造的过程中控制原子排列：&#xA;1. 晶体生长控制 晶体生长（如硅单晶的生长）是控制原子排列的第一步。通过柴氏拉晶法（Czochralski Process, CZ法），可以得到具有完美晶体结构的硅单晶。这一过程通过严格控制以下因素来实现原子的精确排列：&#xA;温度控制：熔融硅的温度和冷却速度直接影响晶体的生长速度和质量。温度必须精确控制在一定范围内，以避免晶体结构中的缺陷或位错。 旋转速度：种子晶体和熔融硅之间的旋转速度影响熔融硅的结晶过程，从而影响原子在晶体中的排列。适当的旋转速度有助于形成均匀的晶格结构。 掺杂控制：在硅晶体生长过程中，可以控制掺杂元素的加入（如磷或硼），以改变材料的电导性。这些掺杂元素会替代硅原子并改变晶格结构。 2. 离子注入与扩散 离子注入是将掺杂原子精确植入到硅晶片中的一种方法。这个过程中的原子排列控制如下：&#xA;加速电场控制：离子注入机中，通过加速电场将掺杂离子（如磷或硼）加速到足够高的能量，使其可以穿透硅晶片表面并嵌入到晶格中。通过调整电场的强度，可以精确控制离子的注入深度和分布。 晶格修复：注入离子后，硅晶格会受到扰动。通过随后的**退火（annealing）**过程，即对晶片进行高温加热，掺杂离子在热扩散作用下会迁移到更稳定的位置，同时修复注入造成的晶格损伤，使掺杂原子重新排列在硅晶格中。 3. 化学气相沉积（CVD）和物理气相沉积（PVD） 在薄膜沉积过程中，如化学气相沉积（CVD）和物理气相沉积（PVD），原子排列的控制通过以下方式实现：&#xA;气相反应控制：在CVD过程中，通过精确控制反应气体的流速、温度、压力等参数，调节气态分子的分解和反应速率，从而控制沉积薄膜的生长速度和厚度，确保沉积的原子按照所需的结构排列。 溅射沉积（PVD）：在溅射沉积过程中，通过控制溅射靶材的材料、溅射功率、基片温度等，可以调节沉积原子的能量和沉积速率，进而影响薄膜的原子排列。 4. 光刻与蚀刻 光刻和蚀刻过程主要用于定义和控制半导体器件的几何结构，但也间接影响到原子排列的准确性：&#xA;分辨率控制：光刻技术通过掩膜的图案设计和光源波长的选择，精确定义器件的图案大小和形状，从而在微观尺度上控制材料的结构。 蚀刻选择性：通过湿法或干法蚀刻，选择性地去除特定区域的材料，保留其他区域，这种精确去除可以实现所需的纳米级图案，同时保持材料内部原子结构的稳定性。 5. 退火与表面处理 退火过程用于修复和重排原子结构，优化半导体材料的性能：&#xA;温度和时间控制：退火过程的温度和时间直接影响掺杂原子的扩散行为和晶格的修复质量。精确的温控可以让掺杂原子均匀地分布在晶格中，减少位错和其他晶格缺陷，形成理想的原子排列。 表面处理：在晶片制造的每一步中，表面清洁和处理是控制原子排列的关键。通过化学溶液清洗和等离子体处理，去除表面的有机物、氧化物和其他污染物，确保在下一步沉积或加工过程中，表面原子的排列整齐无缺陷。 6. 原子层沉积（Atomic Layer Deposition, ALD） **原子层沉积（ALD）**是一种极为精确的薄膜沉积技术，能够在原子层级别控制材料的沉积：&#xA;逐层沉积：ALD通过交替引入反应物气体，使得每一次反应只在基片表面沉积一个原子层的材料。由于每一层的沉积过程都是自限制的，ALD能精确控制薄膜厚度和均匀性，确保原子级别的排列精度。 7. 扫描隧道显微镜（STM）和原子力显微镜（AFM） 在研究和实验层面上，**扫描隧道显微镜（STM）和原子力显微镜（AFM）**等技术可以用于直接操控和观察表面的单个原子：&#xA;原子操控：STM可以用来移动单个原子，并在表面上进行精确的原子排列。例如，通过在铜表面上用STM操纵铁原子，可以实现对原子级别的结构控制。这种操作虽然主要在实验室环境中实现，但它为未来的原子级制造技术奠定了基础。 综上所述，半导体制造中的原子排列控制是一个多层次、多步骤的过程，通过对每个工艺步骤中的温度、压力、材料成分、时间等条件的精确控制，实现对材料在原子级别的操控。尽管我们还不能像费曼所设想的那样随意地排列原子，但这些技术已经能够在极小的尺度上精确地操控原子的位置和排列，为现代微电子器件的高性能和高密度集成提供了基础。</description>
     </item>
     <item>
       <title>TODO List</title>
-      <link>https://sherl0cked.github.io/posts/todolist/</link>
+      <link>https://chenyang-zheng.github.io/posts/todolist/</link>
       <pubDate>Wed, 28 Aug 2024 20:02:20 +0800</pubDate>
-      <guid>https://sherl0cked.github.io/posts/todolist/</guid>
+      <guid>https://chenyang-zheng.github.io/posts/todolist/</guid>
       <description></description>
     </item>
     <item>
+      <title>New COT Evaluation</title>
+      <link>https://chenyang-zheng.github.io/posts/llm_eval/</link>
+      <pubDate>Tue, 27 Aug 2024 20:02:20 +0800</pubDate>
+      <guid>https://chenyang-zheng.github.io/posts/llm_eval/</guid>
+      <description>Optimized query with qa_cot_few_shot working good, and better than original staging and direct answer ones. However it&amp;rsquo;s hallucinating. Why&amp;rsquo;s that, how to prevent them.&#xA;To prevent hallucination from LLM, there are few ways to do it:&#xA;Prompt Optimization, concise prompt with clear instruction on generation rules like Apple does Post-process, filter out hallucinated answers by checking the answer with a pre-trained model like RAG or BART(This is costly with low priority) Use a more powerful model like Llama 3.</description>
+    </item>
+    <item>
       <title>Prompt Engineering for LLM Cot</title>
-      <link>https://sherl0cked.github.io/posts/cot-and-prompt/</link>
+      <link>https://chenyang-zheng.github.io/posts/cot-and-prompt/</link>
       <pubDate>Mon, 26 Aug 2024 20:02:20 +0800</pubDate>
-      <guid>https://sherl0cked.github.io/posts/cot-and-prompt/</guid>
+      <guid>https://chenyang-zheng.github.io/posts/cot-and-prompt/</guid>
       <description>Some thoughts on Prompt Optimization and Instructional Design for LLM CoT:&#xA;F(Instruction) = P(Chain of Thought) # instruction and rules are designed for LLM CoT&#xA;F(CoT) = P(thinking | Instruction) # CoT is the chain of thought, the thinking process of the model&#xA;F(Cot) = F(thinking) = P(answer) # After sorted CoT process based on the instruction, the final answer is generated.&#xA;Instruction complexity will affect the LLM understand the task, concise one gets better performance.</description>
     </item>
   </channel>

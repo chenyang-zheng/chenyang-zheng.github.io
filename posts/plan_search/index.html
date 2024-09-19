@@ -6,7 +6,8 @@
     
     <title>Plan Search | Chenyang&#39;s Eureka</title>
     <meta name="viewport" content="width=device-width,minimum-scale=1">
-    <meta name="description" content="目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。
+    <meta name="description" content="Citation: https://mp.weixin.qq.com/s/xhV9HoeEP22RjuWTjgbPqg
+目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。
 经过特别指令调整的模型在只生成一个答案的情况下（pass@1）通常比基础模型表现得好很多，但当需要生成多个答案时，这种优势就不明显了.
 模型在生成答案时缺乏多样性，这对于搜索的效果非常不利。特别是在极端情况，比如采用「贪心解码」，模型给出的答案会非常相似，因为它们是从模型中重复抽取的。这种情况下，即使模型花费更多推理时间，也难以获得更好的搜索结果。
 为什么多样性很重要？因为搜索的目的是找到最佳答案，而不是找到一个答案。如果模型给出的答案都是雷同的，那么搜索的结果就会受到很大的影响。 多样性和搜索结果的关系：多样性可以补充更多角度，而这些更多角度可以更全面的了解问题，从广度上来说，多样性可以提供更多的选择，从深度上来说，多样性可以提供更多的细节。但是通常广度与深度是相互矛盾的，所以多样性的提升需要在广度与深度之间取得平衡。
@@ -20,7 +21,7 @@
 在这项研究中，该团队探索了多种不同方法，包括重复采样（Repeated Sampling）、思路搜索（IdeaSearch）以及新提出的规划搜索（PlanSearch）。其中前两种方法顾名思义，比较直观，这里我们重点关注新提出的规划搜索。 做法还是类似于(Code)Agent的方法论, Use hashmap≈Use Memory. Greedy Search≈Tool.
 通过提示来获取观察 推导新的观察 将观察变成代码 具体来说，对于每个叶节点，将所有观察以及原始问题 P 放入提示词来调用 LLM，以便生成问题 P 的自然语言解决方案。为了提升多样性，对于每个生成的思路，该团队通过假设该思路是错误的来生成一个额外的思路，并要求 LLM 给出批评 / 反馈，从而将提议的思路翻倍了。 然后，再将这些自然语言解决方案转译成伪代码；再把这些伪代码转译成真正的 Python 代码。
 通过反复的rewrite来保证多样性吗。 也许本身在即使没有使用路径规划（规划和思路搜索）的情况下，也可以通过rewrite来提高回答质量。
-在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.4%）以及标准的 best-of-n 采样方法的分数（pass@200 = 60.">
+在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.">
     <meta name="generator" content="Hugo 0.133.1">
     
     
@@ -45,13 +46,14 @@
     
 
     
-      <link rel="canonical" href="https://sherl0cked.github.io/posts/plan_search/">
+      <link rel="canonical" href="https://chenyang-zheng.github.io/posts/plan_search/">
     
 
-    <meta property="og:url" content="https://sherl0cked.github.io/posts/plan_search/">
+    <meta property="og:url" content="https://chenyang-zheng.github.io/posts/plan_search/">
   <meta property="og:site_name" content="Chenyang&#39;s Eureka">
   <meta property="og:title" content="Plan Search">
-  <meta property="og:description" content="目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。
+  <meta property="og:description" content="Citation: https://mp.weixin.qq.com/s/xhV9HoeEP22RjuWTjgbPqg
+目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。
 经过特别指令调整的模型在只生成一个答案的情况下（pass@1）通常比基础模型表现得好很多，但当需要生成多个答案时，这种优势就不明显了.
 模型在生成答案时缺乏多样性，这对于搜索的效果非常不利。特别是在极端情况，比如采用「贪心解码」，模型给出的答案会非常相似，因为它们是从模型中重复抽取的。这种情况下，即使模型花费更多推理时间，也难以获得更好的搜索结果。
 为什么多样性很重要？因为搜索的目的是找到最佳答案，而不是找到一个答案。如果模型给出的答案都是雷同的，那么搜索的结果就会受到很大的影响。 多样性和搜索结果的关系：多样性可以补充更多角度，而这些更多角度可以更全面的了解问题，从广度上来说，多样性可以提供更多的选择，从深度上来说，多样性可以提供更多的细节。但是通常广度与深度是相互矛盾的，所以多样性的提升需要在广度与深度之间取得平衡。
@@ -65,7 +67,7 @@
 在这项研究中，该团队探索了多种不同方法，包括重复采样（Repeated Sampling）、思路搜索（IdeaSearch）以及新提出的规划搜索（PlanSearch）。其中前两种方法顾名思义，比较直观，这里我们重点关注新提出的规划搜索。 做法还是类似于(Code)Agent的方法论, Use hashmap≈Use Memory. Greedy Search≈Tool.
 通过提示来获取观察 推导新的观察 将观察变成代码 具体来说，对于每个叶节点，将所有观察以及原始问题 P 放入提示词来调用 LLM，以便生成问题 P 的自然语言解决方案。为了提升多样性，对于每个生成的思路，该团队通过假设该思路是错误的来生成一个额外的思路，并要求 LLM 给出批评 / 反馈，从而将提议的思路翻倍了。 然后，再将这些自然语言解决方案转译成伪代码；再把这些伪代码转译成真正的 Python 代码。
 通过反复的rewrite来保证多样性吗。 也许本身在即使没有使用路径规划（规划和思路搜索）的情况下，也可以通过rewrite来提高回答质量。
-在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.4%）以及标准的 best-of-n 采样方法的分数（pass@200 = 60.">
+在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -73,7 +75,8 @@
     <meta property="article:modified_time" content="2024-09-11T20:02:20+08:00">
 
   <meta itemprop="name" content="Plan Search">
-  <meta itemprop="description" content="目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。
+  <meta itemprop="description" content="Citation: https://mp.weixin.qq.com/s/xhV9HoeEP22RjuWTjgbPqg
+目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。
 经过特别指令调整的模型在只生成一个答案的情况下（pass@1）通常比基础模型表现得好很多，但当需要生成多个答案时，这种优势就不明显了.
 模型在生成答案时缺乏多样性，这对于搜索的效果非常不利。特别是在极端情况，比如采用「贪心解码」，模型给出的答案会非常相似，因为它们是从模型中重复抽取的。这种情况下，即使模型花费更多推理时间，也难以获得更好的搜索结果。
 为什么多样性很重要？因为搜索的目的是找到最佳答案，而不是找到一个答案。如果模型给出的答案都是雷同的，那么搜索的结果就会受到很大的影响。 多样性和搜索结果的关系：多样性可以补充更多角度，而这些更多角度可以更全面的了解问题，从广度上来说，多样性可以提供更多的选择，从深度上来说，多样性可以提供更多的细节。但是通常广度与深度是相互矛盾的，所以多样性的提升需要在广度与深度之间取得平衡。
@@ -87,13 +90,14 @@
 在这项研究中，该团队探索了多种不同方法，包括重复采样（Repeated Sampling）、思路搜索（IdeaSearch）以及新提出的规划搜索（PlanSearch）。其中前两种方法顾名思义，比较直观，这里我们重点关注新提出的规划搜索。 做法还是类似于(Code)Agent的方法论, Use hashmap≈Use Memory. Greedy Search≈Tool.
 通过提示来获取观察 推导新的观察 将观察变成代码 具体来说，对于每个叶节点，将所有观察以及原始问题 P 放入提示词来调用 LLM，以便生成问题 P 的自然语言解决方案。为了提升多样性，对于每个生成的思路，该团队通过假设该思路是错误的来生成一个额外的思路，并要求 LLM 给出批评 / 反馈，从而将提议的思路翻倍了。 然后，再将这些自然语言解决方案转译成伪代码；再把这些伪代码转译成真正的 Python 代码。
 通过反复的rewrite来保证多样性吗。 也许本身在即使没有使用路径规划（规划和思路搜索）的情况下，也可以通过rewrite来提高回答质量。
-在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.4%）以及标准的 best-of-n 采样方法的分数（pass@200 = 60.">
+在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.">
   <meta itemprop="datePublished" content="2024-09-11T20:02:20+08:00">
   <meta itemprop="dateModified" content="2024-09-11T20:02:20+08:00">
-  <meta itemprop="wordCount" content="88">
+  <meta itemprop="wordCount" content="103">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Plan Search">
-  <meta name="twitter:description" content="目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。
+  <meta name="twitter:description" content="Citation: https://mp.weixin.qq.com/s/xhV9HoeEP22RjuWTjgbPqg
+目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。
 经过特别指令调整的模型在只生成一个答案的情况下（pass@1）通常比基础模型表现得好很多，但当需要生成多个答案时，这种优势就不明显了.
 模型在生成答案时缺乏多样性，这对于搜索的效果非常不利。特别是在极端情况，比如采用「贪心解码」，模型给出的答案会非常相似，因为它们是从模型中重复抽取的。这种情况下，即使模型花费更多推理时间，也难以获得更好的搜索结果。
 为什么多样性很重要？因为搜索的目的是找到最佳答案，而不是找到一个答案。如果模型给出的答案都是雷同的，那么搜索的结果就会受到很大的影响。 多样性和搜索结果的关系：多样性可以补充更多角度，而这些更多角度可以更全面的了解问题，从广度上来说，多样性可以提供更多的选择，从深度上来说，多样性可以提供更多的细节。但是通常广度与深度是相互矛盾的，所以多样性的提升需要在广度与深度之间取得平衡。
@@ -107,7 +111,7 @@
 在这项研究中，该团队探索了多种不同方法，包括重复采样（Repeated Sampling）、思路搜索（IdeaSearch）以及新提出的规划搜索（PlanSearch）。其中前两种方法顾名思义，比较直观，这里我们重点关注新提出的规划搜索。 做法还是类似于(Code)Agent的方法论, Use hashmap≈Use Memory. Greedy Search≈Tool.
 通过提示来获取观察 推导新的观察 将观察变成代码 具体来说，对于每个叶节点，将所有观察以及原始问题 P 放入提示词来调用 LLM，以便生成问题 P 的自然语言解决方案。为了提升多样性，对于每个生成的思路，该团队通过假设该思路是错误的来生成一个额外的思路，并要求 LLM 给出批评 / 反馈，从而将提议的思路翻倍了。 然后，再将这些自然语言解决方案转译成伪代码；再把这些伪代码转译成真正的 Python 代码。
 通过反复的rewrite来保证多样性吗。 也许本身在即使没有使用路径规划（规划和思路搜索）的情况下，也可以通过rewrite来提高回答质量。
-在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.4%）以及标准的 best-of-n 采样方法的分数（pass@200 = 60.">
+在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.">
 
 	
   </head>
@@ -181,7 +185,8 @@
       
       
     </header>
-    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><ul>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><p>Citation: <a href="https://mp.weixin.qq.com/s/xhV9HoeEP22RjuWTjgbPqg">https://mp.weixin.qq.com/s/xhV9HoeEP22RjuWTjgbPqg</a></p>
+<ul>
 <li>
 <p>目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。</p>
 </li>
@@ -277,7 +282,7 @@ Assumption: 泛化也许可以用LLM本身的能力来做路径，类似于Anthr
 </blockquote>
 </li>
 </ul>
-<p>pass@200是基于之前的重写吗，如果是那路径规划确实是有效的。</p>
+<p>pass@200是基于之前的重写（对于每个生成的思路，该团队通过假设该思路是错误的来生成一个额外的思路）吗，如果是那么路径规划确实是有效的。</p>
 <ul>
 <li>
 <blockquote>
@@ -287,6 +292,10 @@ Assumption: 泛化也许可以用LLM本身的能力来做路径，类似于Anthr
 </li>
 </ul>
 <p>这点很有趣，实际上的F(ideas≈COT)≈answers@k.这里同一个思路可以生成的方案集合中是k个。而思路可能是N次重写的尝试。也就是实际上需要尝试的次数会是之前的N倍。</p>
+<h2 id="todo">TODO:</h2>
+<ul>
+<li><input disabled="" type="checkbox"> Check MetaPrompt and see if it can be applied to idea generation</li>
+</ul>
 <ul class="pa0">
   
 </ul>
@@ -308,7 +317,7 @@ Assumption: 泛化也许可以用LLM本身的能力来做路径，类似于Anthr
     </main>
     <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
   <div class="flex justify-between">
-  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://sherl0cked.github.io/" >
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://chenyang-zheng.github.io/" >
     &copy;  Chenyang's Eureka 2024 
   </a>
     <div>
