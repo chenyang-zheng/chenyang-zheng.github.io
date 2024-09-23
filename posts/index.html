@@ -127,7 +127,7 @@ Model card: https://assets.ctfassets.net/kftzwdyauwt9/67qJD51Aur3eIc96iOfeOP/715
 模型的 BootStrap 有助于构建新的高质量数据，并且新的 Rationales 数据促进了模型进一步提升能力。
 RLHF实际上也是商用模型能和开源的基准模型拉开差距的地方，展示了财力和算力。
 第三点中的bootstrap指的是模型通过自我迭代来生成新的高质量训练数据的过程。具体来说：
-模型首先使用现有的训练数据进行训练 然后利用训练好的模型来生成新的数据，特别是推理过程(Rationales) 这些新生成的高质量数据被加入到训练集中 模型使用扩充后的数据集重新训练，进一步提升能力 重复这个过程，不断改进模型性能 这种方法允许模型逐步提升自身的推理能力，特别是在逻辑推理等难以获得大量高质量训练数据的领域。通过不断生成和利用新的Rationales数据，模型可以持续优化其推理过程和结果质量。
+1. 模型首先使用现有的[Question, Answer]数据集进行训练 2. 然后利用LLM来生成新的答案和推理过程[Rationale, Answer] 3.
     </div>
     <a href="/posts/openai-o1/" class="ba b--moon-gray bg-light-gray br2 color-inherit dib f7 hover-bg-moon-gray link mt2 ph2 pv1">read more</a>
   </div>
