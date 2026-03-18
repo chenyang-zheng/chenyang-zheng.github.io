@@ -3,8 +3,8 @@ title = 'Plan Search'
 date = 2024-09-11T20:02:20+08:00
 draft = false
 slug = 'plan_search'
-description = 'Reading notes on Plan Search, IdeaSearch, and why diversity and high-level planning matter for LLM search and code generation.'
-summary = 'This post reviews Plan Search as a way to improve pass@k performance by generating higher-level plans before answers, and connects that idea to CoT diversity, code generation, and agent-style workflows.'
+description = '关于 Plan Search、IdeaSearch及其与多样性、规划和代码生成关系的阅读笔记。'
+summary = '这篇文章围绕 Plan Search 展开，讨论为什么在生成答案之前先生成高层规划，有机会提升pass@k表现，并把这个思路和CoT多样性、代码生成以及Agent工作流联系起来。'
 tags = ['plan-search', 'llm-search', 'reasoning', 'code-generation']
 categories = ['AI', 'Search']
 +++

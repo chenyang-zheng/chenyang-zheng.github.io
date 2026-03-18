@@ -3,8 +3,8 @@ title = 'OpenAI-o1'
 date = 2024-09-11T20:02:20+08:00
 draft = false
 slug = 'openai-o1'
-description = 'Reading notes on OpenAI o1, implicit chain-of-thought, post-training scaling laws, and the limits of reasoning-oriented models.'
-summary = 'Starting from OpenAI o1 and related commentary, this post discusses reasoning models, implicit CoT, MCTS-like search, bootstrap data generation, critic models, and the tradeoffs between reasoning and agent behavior.'
+description = '围绕OpenAI o1的阅读笔记，讨论隐式思维链、后训练扩展律，以及推理模型的能力边界。'
+summary = '从OpenAI o1与相关解读出发，这篇文章整理了对推理模型的理解，包括隐式CoT、类MCTS搜索、自举数据、Critic模型，以及推理能力与Agent能力之间的权衡。'
 tags = ['openai-o1', 'reasoning-models', 'chain-of-thought', 'mcts']
 categories = ['AI', 'Reasoning']
 +++
