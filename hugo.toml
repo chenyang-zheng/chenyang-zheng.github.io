@@ -5,3 +5,23 @@ theme = 'ananke'
 
 [params]
 mainSections = ['posts']
+
+[[menu.main]]
+name = 'Posts'
+url = '/posts/'
+weight = 10
+
+[[menu.main]]
+name = 'Read'
+url = '/read/'
+weight = 20
+
+[[menu.main]]
+name = 'Invests'
+url = '/invests/'
+weight = 30
+
+[[menu.main]]
+name = 'Careers'
+url = '/careers/'
+weight = 40
