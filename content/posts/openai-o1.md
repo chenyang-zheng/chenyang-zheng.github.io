@@ -1,6 +1,7 @@
 +++
 title = 'OpenAI-o1'
 date = 2024-09-11T20:02:20+08:00
+lastmod = 2024-09-11T20:02:20+08:00
 draft = false
 slug = 'openai-o1'
 description = '围绕OpenAI o1的阅读笔记，讨论隐式思维链、后训练扩展律，以及推理模型的能力边界。'

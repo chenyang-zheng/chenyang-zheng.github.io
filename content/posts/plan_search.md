@@ -1,6 +1,7 @@
 +++
 title = 'Plan Search'
 date = 2024-09-11T20:02:20+08:00
+lastmod = 2024-09-11T20:02:20+08:00
 draft = false
 slug = 'plan_search'
 description = '关于 Plan Search、IdeaSearch及其与多样性、规划和代码生成关系的阅读笔记。'

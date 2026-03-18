@@ -1,6 +1,7 @@
 +++
 title = 'New COT Evaluation'
 date = 2024-08-27T20:02:20+08:00
+lastmod = 2024-08-27T20:02:20+08:00
 draft = false
 slug = 'llm_eval'
 description = 'A working note on evaluating chain-of-thought QA systems, with a focus on hallucination, faithfulness, and business-facing answer quality.'

@@ -1,6 +1,7 @@
 +++
 title = 'Prompt Engineering for LLM Cot'
 date = 2024-08-26T20:02:20+08:00
+lastmod = 2024-08-26T20:02:20+08:00
 draft = false
 slug = 'cot-and-prompt'
 description = 'Early notes on prompt engineering, instruction design, and how chain-of-thought can improve LLM reasoning workflows.'

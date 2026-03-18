@@ -1,6 +1,7 @@
 +++
 title = 'OpenClaw：AI OS与Personal的早期实验？'
 date = 2026-03-17T20:02:20+08:00
+lastmod = 2026-03-17T22:00:36+08:00
 draft = false
 slug = 'openclaw-personal-agent'
 description = 'OpenClaw同时踩在AI OS与personal memory两条线上，也因此成为观察个性化AI早期形态的一个好样本。'
