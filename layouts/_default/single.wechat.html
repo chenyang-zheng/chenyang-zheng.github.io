@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.Language.Lang }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ .Title }} — 微信预览</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    /* ── Page chrome ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #ededed;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+                   "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Toolbar ───────────────────────────────────────────────── */
+    #toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 13px;
+    }
+    #toolbar a {
+      color: #aaa;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    #toolbar a:hover { color: #fff; }
+    #toolbar .title {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      color: #ccc;
+    }
+    #toolbar .sep { color: #444; }
+
+    #btn-copy {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: #07c160;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .15s;
+    }
+    #btn-copy:hover { background: #06ad56; }
+    #btn-copy.copied { background: #555; }
+
+    /* ── Phone frame ───────────────────────────────────────────── */
+    .frame-wrap {
+      max-width: 420px;
+      margin: 24px auto 48px;
+      padding: 0 12px;
+    }
+    .frame-label {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    .phone {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 32px rgba(0,0,0,.18);
+      overflow: hidden;
+    }
+    .phone-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px 8px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 12px;
+      color: #888;
+    }
+    .phone-bar .wx-logo {
+      font-weight: 700;
+      color: #07c160;
+      font-size: 13px;
+    }
+
+    /* ── Article area (WeChat inline-style preview) ─────────────── */
+    #wechat-article {
+      padding: 20px 16px 40px;
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC",
+                   "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.85;
+      color: #333;
+      word-break: break-word;
+    }
+
+    #wechat-article h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0 0 6px;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+    #wechat-article .meta {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    #wechat-article h2 {
+      font-size: 19px;
+      font-weight: 700;
+      margin: 26px 0 12px;
+      padding: 4px 0 4px 11px;
+      border-left: 4px solid #07c160;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+    #wechat-article h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin: 20px 0 10px;
+      color: #333;
+    }
+    #wechat-article h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 16px 0 8px;
+      color: #555;
+    }
+    #wechat-article p {
+      margin: 12px 0;
+      line-height: 1.9;
+    }
+    #wechat-article ul, #wechat-article ol {
+      padding-left: 1.5em;
+      margin: 10px 0;
+    }
+    #wechat-article li { margin: 6px 0; line-height: 1.8; }
+    #wechat-article blockquote {
+      border-left: 4px solid #d0d7de;
+      margin: 14px 0;
+      padding: 10px 14px;
+      background: #f6f8fa;
+      border-radius: 0 4px 4px 0;
+      color: #57606a;
+    }
+    #wechat-article pre {
+      background: #1e1e1e;
+      border-radius: 6px;
+      padding: 14px;
+      overflow-x: auto;
+      margin: 14px 0;
+    }
+    #wechat-article pre code {
+      color: #d4d4d4;
+      font-family: "JetBrains Mono", "Fira Code", Menlo, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      background: none;
+      padding: 0;
+      border-radius: 0;
+    }
+    #wechat-article code {
+      background: #f0f0f0;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: Menlo, monospace;
+      font-size: 13px;
+      color: #c7254e;
+    }
+    #wechat-article strong { font-weight: 700; color: #1a1a1a; }
+    #wechat-article em { font-style: italic; }
+    #wechat-article a { color: #07c160; text-decoration: none; }
+    #wechat-article hr {
+      border: none;
+      border-top: 2px solid #eaecef;
+      margin: 24px 0;
+    }
+    #wechat-article img { max-width: 100%; border-radius: 4px; }
+
+    /* Footnote ref superscript */
+    #wechat-article sup.fn-ref {
+      color: #07c160;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: default;
+    }
+
+    /* Footnotes section */
+    #wechat-footnotes {
+      margin-top: 28px;
+      padding-top: 14px;
+      border-top: 1px solid #eee;
+    }
+    #wechat-footnotes .fn-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    #wechat-footnotes .fn-item {
+      font-size: 12px;
+      color: #666;
+      margin: 5px 0;
+      line-height: 1.6;
+      word-break: break-all;
+    }
+    #wechat-footnotes .fn-num {
+      color: #07c160;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
+    /* Toast */
+    #toast {
+      display: none;
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.75);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 13px;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Toolbar ────────────────────────────────────────────────────────── -->
+<div id="toolbar">
+  {{ with .OutputFormats.Get "html" }}<a href="{{ .RelPermalink }}">← 返回文章</a>{{ end }}
+  <span class="sep">|</span>
+  <span class="title">{{ .Title }}</span>
+  <button id="btn-copy" onclick="copyWechat()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <rect x="9" y="9" width="13" height="13" rx="2"/>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+    </svg>
+    复制内容
+  </button>
+</div>
+
+<!-- ── Phone frame ────────────────────────────────────────────────────── -->
+<div class="frame-wrap">
+  <p class="frame-label">微信公众号排版预览（手机宽度）</p>
+  <div class="phone">
+    <div class="phone-bar">
+      <span>{{ .Date.Format "01-02 15:04" }}</span>
+      <span class="wx-logo">微信</span>
+      <span>{{ .ReadingTime }} min read</span>
+    </div>
+
+    <div id="wechat-article">
+      <h1>{{ .Title }}</h1>
+      {{ with .Description }}
+      <div class="meta">{{ . }}</div>
+      {{ end }}
+
+      {{- .Content -}}
+
+      <div id="wechat-footnotes" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast">✅ 已复制！粘贴到公众号编辑器即可</div>
+
+<script>
+// ── Step 1: Convert external links → footnotes ───────────────────────────
+(function () {
+  const article = document.getElementById('wechat-article');
+  const fnSection = document.getElementById('wechat-footnotes');
+  const links = article.querySelectorAll('a[href]');
+  const refs = [];
+
+  links.forEach(function (a) {
+    const href = a.getAttribute('href');
+    // Skip anchor links and relative links
+    if (!href || href.startsWith('#') || href.startsWith('/') || href.startsWith('.')) return;
+
+    refs.push({ text: a.textContent, url: href });
+    const n = refs.length;
+    const sup = document.createElement('sup');
+    sup.className = 'fn-ref';
+    sup.textContent = '[' + n + ']';
+    sup.title = href;
+    a.insertAdjacentElement('afterend', sup);
+    // Replace link with plain text
+    const span = document.createElement('span');
+    span.textContent = a.textContent;
+    a.replaceWith(span);
+  });
+
+  if (refs.length > 0) {
+    fnSection.style.display = '';
+    const title = document.createElement('div');
+    title.className = 'fn-title';
+    title.textContent = '参考链接';
+    fnSection.appendChild(title);
+
+    refs.forEach(function (ref, i) {
+      const item = document.createElement('div');
+      item.className = 'fn-item';
+      item.innerHTML =
+        '<span class="fn-num">[' + (i + 1) + ']</span>' +
+        escHtml(ref.text) + '：' + escHtml(ref.url);
+      fnSection.appendChild(item);
+    });
+  }
+})();
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Step 2: Copy with inline styles ─────────────────────────────────────
+
+// Properties that WeChat cares about
+const INLINE_PROPS = [
+  'font-family','font-size','font-weight','font-style','font-variant',
+  'color','background-color',
+  'margin','margin-top','margin-right','margin-bottom','margin-left',
+  'padding','padding-top','padding-right','padding-bottom','padding-left',
+  'border','border-left','border-top','border-bottom','border-right',
+  'border-radius',
+  'line-height','letter-spacing','word-break','word-spacing',
+  'text-align','text-decoration','text-indent',
+  'display','list-style-type','list-style-position',
+  'white-space','overflow-x',
+  'width','max-width',
+];
+
+// Values that mean "default" / nothing — skip to keep HTML smaller
+const SKIP_VALUES = new Set([
+  'rgba(0, 0, 0, 0)', 'transparent', 'normal', 'none', '0px', 'auto',
+  'initial', 'inherit', 'unset',
+]);
+
+function inlineNode(clone, live) {
+  if (live.nodeType !== 1) return;
+  const cs = window.getComputedStyle(live);
+  const parts = [];
+  for (const prop of INLINE_PROPS) {
+    const val = cs.getPropertyValue(prop);
+    if (val && !SKIP_VALUES.has(val)) {
+      parts.push(prop + ':' + val);
+    }
+  }
+  if (parts.length) clone.setAttribute('style', parts.join(';'));
+
+  // Remove class / id attributes (WeChat doesn't need them)
+  clone.removeAttribute('class');
+  clone.removeAttribute('id');
+
+  const liveChildren = live.children;
+  const cloneChildren = clone.children;
+  for (let i = 0; i < liveChildren.length; i++) {
+    inlineNode(cloneChildren[i], liveChildren[i]);
+  }
+}
+
+function copyWechat() {
+  const article = document.getElementById('wechat-article');
+  const clone = article.cloneNode(true);
+
+  // Walk both trees simultaneously to read computed styles from live DOM
+  inlineNode(clone, article);
+
+  // Wrap in WeChat section
+  const section = document.createElement('section');
+  section.style.cssText =
+    'font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",' +
+    '"Hiragino Sans GB","Microsoft YaHei",sans-serif;' +
+    'font-size:16px;line-height:1.85;color:#333;max-width:680px;';
+  section.innerHTML = clone.innerHTML;
+
+  // Write to clipboard as HTML
+  const html = section.outerHTML;
+
+  if (navigator.clipboard && window.ClipboardItem) {
+    const blob = new Blob([html], { type: 'text/html' });
+    const item = new ClipboardItem({ 'text/html': blob });
+    navigator.clipboard.write([item]).then(showToast).catch(fallback);
+  } else {
+    fallback();
+  }
+
+  function fallback() {
+    // execCommand fallback for older browsers / non-HTTPS
+    const ta = document.createElement('div');
+    ta.contentEditable = 'true';
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;';
+    ta.innerHTML = html;
+    document.body.appendChild(ta);
+    const sel = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(ta);
+    sel.removeAllRanges();
+    sel.addRange(range);
+    document.execCommand('copy');
+    sel.removeAllRanges();
+    document.body.removeChild(ta);
+    showToast();
+  }
+}
+
+function showToast() {
+  const btn = document.getElementById('btn-copy');
+  const toast = document.getElementById('toast');
+  btn.classList.add('copied');
+  btn.textContent = '✓ 已复制';
+  toast.style.display = 'block';
+  setTimeout(function () {
+    toast.style.display = 'none';
+    btn.classList.remove('copied');
+    btn.innerHTML =
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"' +
+      ' stroke="currentColor" stroke-width="2.5" stroke-linecap="round">' +
+      '<rect x="9" y="9" width="13" height="13" rx="2"/>' +
+      '<path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>' +
+      '</svg> 复制内容';
+  }, 2500);
+}
+</script>
+</body>
+</html>
