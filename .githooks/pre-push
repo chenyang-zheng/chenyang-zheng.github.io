@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# pre-push hook: run content metadata checker before pushing to remote.
+#
+# Installed via: git config core.hooksPath .githooks
+# Or:            make setup-hooks
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+CHECKER="$REPO_ROOT/scripts/check_content.py"
+
+echo "🔍 检查 Hugo 文章元数据..."
+echo ""
+
+if ! python3 "$CHECKER"; then
+    echo ""
+    echo "❌ 推送被拦截：请先补全必填元数据字段。"
+    echo "   提示：运行 'python3 scripts/check_content.py --fix' 可自动补全默认值。"
+    exit 1
+fi
+
+echo ""
+echo "✅ 元数据检查通过，继续推送..."
+exit 0
