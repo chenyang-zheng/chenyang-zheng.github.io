@@ -2,3 +2,6 @@ baseURL = 'https://chenyang-zheng.github.io/'
 languageCode = 'en-us'
 title = "Chenyang's Eureka"
 theme = 'ananke'
+
+[params]
+mainSections = ['posts']
