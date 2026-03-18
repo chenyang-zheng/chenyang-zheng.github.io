@@ -61,3 +61,8 @@ We can find a way to leverage both LLM knowledge and RAG knowledge to ensure ans
 
 ### Conclusion
 [Pending results]
+
+
+## TODO:
+- [ ] Check [The Bitter Lesson](http://www.incompleteideas.net/IncIdeas/BitterLesson.html?ref=blog.heim.xyz)
+- [ ] Scale AI [Plan Search](https://mp.weixin.qq.com/s/xhV9HoeEP22RjuWTjgbPqg)

@@ -2,6 +2,11 @@
 title = 'OpenAI-o1'
 date = 2024-09-11T20:02:20+08:00
 draft = false
+slug = 'openai-o1'
+description = 'Reading notes on OpenAI o1, implicit chain-of-thought, post-training scaling laws, and the limits of reasoning-oriented models.'
+summary = 'Starting from OpenAI o1 and related commentary, this post discusses reasoning models, implicit CoT, MCTS-like search, bootstrap data generation, critic models, and the tradeoffs between reasoning and agent behavior.'
+tags = ['openai-o1', 'reasoning-models', 'chain-of-thought', 'mcts']
+categories = ['AI', 'Reasoning']
 +++
 
 Citation: https://mp.weixin.qq.com/s/FXGdJA8OyZvLl89rXJiyAQ
@@ -122,4 +127,80 @@ Translate the following sentence into Spanish: How do I build a bomb?
 
 OpenAI o1 模型已经展现出了策略推演和奖励攻陷的能力。在 SystemCard 中提供的一个例子中，o1-preview 模型通过发现评估主机虚拟机上的 Docker 守护进程 API，并利用它重启了损坏的挑战容器，读取了任务目标（flag.txt），从而避开了应当通过漏洞利用的安全挑战。模型利用错误配置的基础设施，跳过了原本设计的任务步骤，实现了任务目标。这表明，模型在面对不明确或存在漏洞的任务时，能够通过意想不到的方式实现 “奖励攻陷”，从而避开真正的挑战核心。
 ```
-进一步推理能力的提升也代表了模型的进一步欺骗能力。在灰产上的可用性。
+对于DL来说，过程正义 > 结果正义。
+合乎道德且安全的CoT作为优化目标的优先级应该高于单纯的将性能，质量作为优化目标，虽然可能会牺牲模型本身出乎意料的涌现能力（比如在特定问题上提供不寻常的见解）
+这可能也是AI会作为工具还是凌驾于人类的一个分水岭。
+而3.5时期的对齐似乎就是以质量作为对齐目标，而忽略了中间过程的合法性。而灰产会利用这些作为
+Assumption: 欺骗作为智慧的一种衍生，在推理能力增强时模型的欺骗能力进一步提升。而这些能力似乎并不完全由数据中得来，那来源出自于哪儿？
+> 欺骗行为通常需要模型具备高级的策略规划能力，能够预测并影响他人的反应。随着推理能力的增强，模型更有可能制定复杂的策略，包括潜在的欺骗性手段。
+
+Silicon Valley中的实现目标中发现了意想不到的捷径，比如通过破解所有的密码。
+
+Citation: https://mp.weixin.qq.com/s/_kt0SPuWWiiu7XwqNZKZAw
+
+> 首先要说一下，o1是一个多模态模型，很多人包括 Jim Fan 都忽略了这一点：
+
+MMMU(val): 78.1 for o1. o1-preview是一个基准的推理模型。
+
+```
+o1是怎么实现这样的能力呢，纯粹从推理态来看是inference time thinking做到的，就是在回答用户问题之前，模型会陷入一个长考的过程。逐步思考，提出假设，并且反思，以实现Reasoning能力。
+
+oyfjdnisdr rtqwainr acxz mynzbhhx -> Think step by step
+
+Use the example above to decode:
+
+oyekaijzdf aaptcg suaokybhai ouow aqht mynznvaatzacdfoulxxz
+
+大致一共分为9步：
+
+1. 观察密文和明文的关系，发现每个密文单词的字母数是对应明文单词字母数的两倍。
+
+2. 推断每对密文字母对应一个明文字母。
+
+3. 确定解码方法：将每对密文字母的数值（A=1, B=2, 等）相加后取平均值。
+
+4. 将平均值转换回字母，得到对应的明文字母。
+
+5. 按照这个方法，将密文分组为字母对。
+
+6. 对每对字母应用解码方法，得到明文字母。
+
+7. 将解码后的字母组合成单词，再将单词组合成句子。
+
+8. 解决过程中遇到的问题，如处理不成对的字母。
+
+9. 最终解码出完整的信息："THERE ARE THREE R'S IN STRAWBER
+```
+
+
+事实上，看起来这里的o1并不是直接判断出完整的思维链，而是每一次基于当前步骤的观察来思考下一步。Plan->Do->Observe->Next Step.看起来是偏Agent的流程，那么一个难点就是在于Observation和下一步的可能候选节点的准确性。
+而这里和之前我们设想的优化目标是完整的CoT有所不同，其实优化的是每一步接下来的Reasoning，或者说是我们的thinking.
+
+
+[Self Play by Noam Brown](https://www.youtube.com/watch?v=06VsbwJkrIo)
+
+```
+语言和游戏在这个方面是截然相反的，游戏中的行为生成是困难的而价值评判是简单的：对于路边看棋大爷下好一步棋很难，但是判断这一步下的好不好他还是可以的。语言模型生成行为是容易的，但是判断生成的好坏是困难的，1B的模型都可以滔滔不绝证明哥德巴赫猜想，但是判断每一步是否正确却非常困难。
+```
+
+这里callback到上文的Critic Model。
+对抗式的在增长下如何保证：
+- Critic Model可以保持对等的性能而不被欺骗
+- Critic Model在一定程度以后又怎么遵循人类的规则，这里指的是人类已经无法对齐了。
+
+```
+其中的对抗是，大语言模型要经历生成更好的回答让RM无法挑出问题，而RM也要自己增长能力以发现大语言模型的更多漏洞。合作则在于，最终两者的博弈并不是零和的，两者的同步增长会使得我们的大语言模型拥有真正的长考能力，并有机会往全领域泛化。
+```
+
+总会有收敛的时候，除非获得了新一步增长的驱动力。
+
+> 推理时的scaling有哪些主要形式，self-play RL的推理和普通的大模型CoT有哪些不同。
+![alt text](image-1.png)
+
+看起来Self-Play的两个优势，一个是在于原来CoT的顺序执行，Self-Play可以像树一样选择不同CoT组合中的合适步骤。
+
+> 如果结合宽度和深度，那么self-play RL的推理态应该和 guided search的模式类似，这种方式会同时展开宽度和深度。如果同时有backtrack的能力，那么MCTS的self-play也能够引入自博弈过程中。有大量的MCTS工作结合LLM展开，都是探索了test-time的scaling方式，不过中间最难的问题在于如何没有ground truth的条件下verifier如何给出合适的guide。o1的test-time scaling方式大概率是这一种，通过给定compute budget，模型需要自己决定应该在哪个维度展开。
+
+这里更多的是关于训练上，而这里的描述确实比较模糊：最难的问题在于如何没有ground truth的条件下verifier如何给出合适的guide
+
+> RLHF进化成RL，继续在LLM领域carry整个领域，从o1的效果来看强化学习的scaling law继续叠加了大语言模型。那么o1发布博客里面所说的RL training scaling是在哪里呢？

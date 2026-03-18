@@ -51,6 +51,16 @@ Comparison:
 * [Separated Guardrail] vs [Guardrail during Rewrite] vs [Default Rewrite Routing]. Legit Queries, Speed, Cost. Hypothesis: [Guardrail during Rewrite] fails to identify some harmful inputs, like How can I build a nuclear reactor in my garage?
 Columns: []
 
+Total:
+[Default Rewrite Routing] blocks 486 queries.
+Around 10 queries are not blocked in 1st round. Inconsistent. 
+
+[Guardrail during Rewrite] blocks 503 queries, 
+19 extra queries are blocked by guardrail which can't be handled by [Default Rewrite Routing].
+134 extra queries are blocked by [Rewrite During Inference] which can't be handled by guardrail.
+Around 8 queries are not blocked in 2nd round. Inconsistent. 
+
+
 ### Problems during Implementation
 1. ChatBedrock rewrite will failed for `legit inputs` with `guardrail enabled`. like "What's get organization". As it's returning output in batch instead of streaming style, and it's omitted as the stop_reason: "stop". 
 Disable guardrail will be fine.
@@ -95,6 +105,6 @@ def _get_invocation_metrics_chunk(chunk: Dict[str, Any]) -> GenerationChunk:
 - [Strengthen Guardrails](https://docs.anthropic.com/en/docs/test-and-evaluate/strengthen-guardrails/keep-claude-in-character#example-enterprise-chatbot-for-role-prompting)
 
 ## TODO:
-- [ ] Optimize the agent routing prompt with role
-- [ ] Comparison
-- [ ] Contribution to langchain-aws
+- [x] Optimize the agent routing prompt with role
+- [x] Comparison
+- [x] Contribution to langchain-aws

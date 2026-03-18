@@ -2,7 +2,14 @@
 title = 'Plan Search'
 date = 2024-09-11T20:02:20+08:00
 draft = false
+slug = 'plan_search'
+description = 'Reading notes on Plan Search, IdeaSearch, and why diversity and high-level planning matter for LLM search and code generation.'
+summary = 'This post reviews Plan Search as a way to improve pass@k performance by generating higher-level plans before answers, and connects that idea to CoT diversity, code generation, and agent-style workflows.'
+tags = ['plan-search', 'llm-search', 'reasoning', 'code-generation']
+categories = ['AI', 'Search']
 +++
+
+Citation: https://mp.weixin.qq.com/s/xhV9HoeEP22RjuWTjgbPqg
 
 - 目前阻碍模型应用「搜索」的主要难题是模型给出的答案过于雷同，缺乏多样性。
 - > 经过特别指令调整的模型在只生成一个答案的情况下（pass@1）通常比基础模型表现得好很多，但当需要生成多个答案时，这种优势就不明显了.
@@ -40,8 +47,11 @@ Assumption: 泛化也许可以用LLM本身的能力来做路径，类似于Anthr
 也许本身在即使没有使用路径规划（规划和思路搜索）的情况下，也可以通过rewrite来提高回答质量。
 - > 在 Claude 3.5 Sonnet 上使用规划搜索方法时，在 LiveCodeBench 基准上得到了当前最佳的 pass@200 性能：77.0%。该表现优于不使用搜索时获得的最佳分数（pass@1 = 41.4%）以及标准的 best-of-n 采样方法的分数（pass@200 = 60.6%）。
 
-pass@200是基于之前的重写吗，如果是那路径规划确实是有效的。
+pass@200是基于之前的重写（对于每个生成的思路，该团队通过假设该思路是错误的来生成一个额外的思路）吗，如果是那么路径规划确实是有效的。
 - > 规划搜索并不利于某些模型的 pass@1 指标，其中最明显的是 Sonnet 3.5 在 LiveCodeBench 上的表现 —— 这是实验中表现最好的组合。
 该团队基于直觉给出了解释：提升思路多样性可能会降低生成任何特定思路的概率，同时增加在给定池中至少有一个正确思路的几率。因此，pass@1 可能会略低于平常，但也正是由于这个原因，pass@k 指标可能会优于缺乏多样性的思路池。
   
 这点很有趣，实际上的F(ideas≈COT)≈answers@k.这里同一个思路可以生成的方案集合中是k个。而思路可能是N次重写的尝试。也就是实际上需要尝试的次数会是之前的N倍。 
+
+## TODO:
+- [ ] Check MetaPrompt and see if it can be applied to idea generation

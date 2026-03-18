@@ -2,6 +2,11 @@
 title = 'Prompt Engineering for LLM Cot'
 date = 2024-08-26T20:02:20+08:00
 draft = false
+slug = 'cot-and-prompt'
+description = 'Early notes on prompt engineering, instruction design, and how chain-of-thought can improve LLM reasoning workflows.'
+summary = 'This post outlines a simple view of prompt engineering for LLM CoT, arguing that concise instructions, divide-and-conquer task design, and better workflow decomposition can improve reasoning quality.'
+tags = ['prompt-engineering', 'chain-of-thought', 'llm', 'instruction-design']
+categories = ['AI', 'Context Engineering']
 +++
 
 **Some thoughts on Prompt Optimization and Instructional Design for LLM CoT**:

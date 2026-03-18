@@ -1,8 +1,14 @@
 +++
 title = 'New COT Evaluation'
 date = 2024-08-27T20:02:20+08:00
-draft = true
+draft = false
+slug = 'llm_eval'
+description = 'A working note on evaluating chain-of-thought QA systems, with a focus on hallucination, faithfulness, and business-facing answer quality.'
+summary = 'This post sketches an evaluation plan for a CoT-based knowledge QA agent, covering hallucination control, answer relevancy, faithfulness, dataset design, and task-specific quality metrics.'
+tags = ['llm-evaluation', 'chain-of-thought', 'hallucination', 'rag']
+categories = ['AI', 'Evaluation']
 +++
+
 Optimized query with qa_cot_few_shot working good, and better than original staging and direct answer ones.
 However it's hallucinating. Why's that, how to prevent them.
 
