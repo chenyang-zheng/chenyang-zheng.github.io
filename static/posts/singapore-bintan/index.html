@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>新加坡｜民丹｜吉隆坡 11天亲子神奇动物之旅 (通用攻略版)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<style>
+  :root {
+    --bg:#f7f8fb;
+    --card:#ffffff;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --sg:#10b981;     
+    --bintan:#f59e0b; 
+    --kl:#3b82f6;     
+    --accent:#111827;
+    --danger:#ef4444;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", sans-serif;
+    background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 220px);
+    color: var(--text);
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 24px; }
+  .hero {
+    background: linear-gradient(135deg, #0f172a, #1d4ed8 60%, #38bdf8);
+    color: white; border-radius: 24px; padding: 28px 30px; box-shadow: 0 16px 40px rgba(15,23,42,.18);
+  }
+  .hero h1 { margin: 0 0 10px; font-size: 34px; line-height: 1.15; }
+  .hero p { margin: 0; opacity: .92; line-height: 1.65; font-size: 15px; }
+  .meta { display:grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-top: 18px; }
+  .meta .box { background: rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.18); border-radius: 16px; padding: 14px 16px; }
+  .meta .k { font-size:12px; opacity:.82; }
+  .meta .v { font-size:18px; font-weight:700; margin-top: 6px; }
+  .section { margin-top: 24px; }
+  .card { background: var(--card); border:1px solid var(--line); border-radius: 20px; padding: 22px; box-shadow: 0 10px 30px rgba(17,24,39,.05); }
+  .card.alert { border-left: 6px solid var(--danger); background: #fff5f5; }
+  h2 { margin:0 0 14px; font-size: 24px; }
+  .sub { color: var(--muted); margin: 0 0 16px; font-size: 14px; line-height: 1.6; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { border-bottom: 1px solid var(--line); padding: 12px 10px; text-align: left; vertical-align: middle; line-height: 1.6;}
+  th { font-size: 13px; color: var(--muted); font-weight: 700; background:#fafafa; }
+  tr:last-child td { border-bottom: none; }
+  .closed-badge { display: inline-block; background-color: #fffbeb; color: #d97706; font-size: 12px; font-weight: bold; padding: 2px 6px; border-radius: 4px; border: 1px solid #fde68a; margin-top: 4px; }
+  .safe-badge { display: inline-block; background-color: #f0fdf4; color: #16a34a; font-size: 12px; font-weight: bold; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0; margin-top: 4px; }
+  #map { height: 780px; border-radius: 18px; overflow: hidden; border:1px solid var(--line); background:#f0f3f6; }
+  .legend { display:flex; gap:12px; flex-wrap:wrap; margin-top: 14px; color: var(--muted); font-size: 13px; }
+  .legend .tag { display:inline-flex; align-items:center; gap:8px; background:#fafafa; border:1px solid var(--line); border-radius:999px; padding:8px 12px; }
+  .dot { width:12px; height:12px; border-radius:50%; }
+  .dot.sg { background: var(--sg); } .dot.bintan { background: var(--bintan); } .dot.kl { background: var(--kl); }
+  .grid { display:grid; grid-template-columns: 1.15fr .85fr; gap: 24px; }
+  .place-list { display:grid; grid-template-columns: 1fr; gap: 12px; height: 780px; overflow-y: auto; padding-right: 10px;}
+  .place-list::-webkit-scrollbar { width: 6px; } .place-list::-webkit-scrollbar-track { background: transparent; } .place-list::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+  .place-card { display:flex; gap: 12px; border:1px solid var(--line); border-left: 5px solid #ddd; border-radius: 16px; padding: 12px; background:white; align-items: flex-start; }
+  .place-card.sg { border-left-color: var(--sg); } .place-card.bintan { border-left-color: var(--bintan); } .place-card.kl { border-left-color: var(--kl); }
+  .place-index { width: 30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#111827; color:#fff; font-size:13px; font-weight:700; flex: 0 0 auto; }
+  .place-name { font-weight:700; color: var(--accent); }
+  .place-meta { font-size: 12px; color: var(--muted); margin:4px 0 6px; }
+  .place-note { font-size: 13px; line-height:1.5; color: #4b5563; margin-bottom: 8px;}
+  
+  .place-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn-nav { display: inline-block; padding: 4px 10px; font-size: 12px; border-radius: 6px; text-decoration: none; cursor: pointer; border: 1px solid transparent; }
+  .btn-apple { background: #f3f4f6; color: #111827; border-color: #d1d5db; }
+  .btn-apple:hover { background: #e5e7eb; }
+  .btn-google { background: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
+  .btn-copy { background: #fef3c7; color: #d97706; border-color: #fde68a; }
+  .btn-copy:active { background: #fde68a; }
+  
+  ul.notes { margin: 0; padding-left: 20px; line-height: 1.7; font-size: 14px;}
+  .notes li { margin-bottom: 8px; }
+  .footer { color: var(--muted); font-size: 12px; margin-top: 16px; line-height: 1.6; text-align: center; }
+  .marker { width: 30px; height:30px; border-radius:50% 50% 50% 0; transform: rotate(-45deg); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:12px; box-shadow: 0 4px 10px rgba(0,0,0,.3); border: 2px solid rgba(255,255,255,.95); }
+  .marker span { transform: rotate(45deg); }
+  .marker.sg { background: var(--sg); } .marker.bintan { background: var(--bintan); } .marker.kl { background: var(--kl); }
+  @media (max-width: 900px) { .meta { grid-template-columns: 1fr 1fr; } .grid { grid-template-columns: 1fr; } .place-list { height: auto; overflow: visible; } .wrap { padding: 16px; } #map { height: 480px; } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>新加坡｜民丹｜吉隆坡<br>11天亲子神奇动物之旅</h1>
+      <p>路线节奏：新加坡城市动物探险 → 民丹海岛玩水放电 → 吉隆坡自然生态与本土风情。<br>核心原则：上午主打温和探索，中午保留充足午睡，傍晚低强度散步，完美兼顾两个孩子的体力与胆量。</p>
+      <div class="meta">
+        <div class="box"><div class="k">行程总长</div><div class="v">11天10晚</div></div>
+        <div class="box"><div class="k">新村大本营</div><div class="v">乌节路商圈</div></div>
+        <div class="box"><div class="k">海岛段</div><div class="v">民丹岛 2 晚</div></div>
+        <div class="box"><div class="k">打卡工具</div><div class="v">一键导航防迷路</div></div>
+      </div>
+    </section>
+
+    <section class="section card alert">
+      <h2 style="color: var(--danger);">✈️ 跨境与网络使用指南</h2>
+      <ul class="notes">
+        <li><strong>通关文件：</strong>新加坡需填 <strong>SGAC</strong> (从民丹回新需再填一次)；大马需填 <strong>MDAC</strong>；印尼强烈建议提前办 <strong>e-VoA (电子落地签)</strong> 避免现场排队。</li>
+        <li><strong>时差陷阱：</strong>民丹岛比新/马/中<strong>慢 1 小时</strong>。船票显示的时间均为当地时间。</li>
+        <li><strong>地图导航秘籍：</strong>国内查阅规划时，苹果手机可点【 苹果地图】；安卓手机可点【📋 复制坐标】，打开<strong>高德 / 百度地图</strong>直接粘贴，精准避开搜不到英文地名的痛点。</li>
+      </ul>
+    </section>
+
+    <section class="section card">
+      <h2>每日详细行程表</h2>
+      <p class="sub">以新加坡市中心酒店为基点，充分发挥商圈的餐饮和交通优势。（排期建议：将“第8天”落在星期一，可完美避开绝大多数场馆的闭馆日）</p>
+      <table>
+        <thead>
+          <tr><th style="width:12%">天数</th><th style="width:16%">行程主题</th><th style="width:16%">关键时间</th><th>行程明细与备忘</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>第1天</strong></td>
+            <td><strong>抵达新加坡</strong></td>
+            <td>下午/傍晚</td>
+            <td>抵达后入住新加坡市区酒店，晚上在商圈吃简餐散步，让孩子适应热带气温。</td>
+          </tr>
+          <tr>
+            <td><strong>第2天</strong></td>
+            <td><strong>植物园亲子</strong></td>
+            <td>09:00–12:00</td>
+            <td>上午去 <strong>Jacob Ballas Children’s Garden</strong>；中午回酒店午睡；下午轻松活动。<br><span class="closed-badge">⚠️ 请注意避开周一：该园区逢周一闭园</span></td>
+          </tr>
+          <tr>
+            <td><strong>第3天</strong></td>
+            <td><strong>圣淘沙海洋馆</strong></td>
+            <td>10:00–16:00</td>
+            <td>乘 <strong>跨海缆车</strong> 入岛；午后主玩 <strong>S.E.A. 海洋馆</strong>，冷气护体，结束后回酒店。</td>
+          </tr>
+          <tr>
+            <td><strong>第4天</strong></td>
+            <td><strong>动物园主日</strong></td>
+            <td>09:00–13:00</td>
+            <td>上午主玩 <strong>Singapore Zoo</strong>，无铁笼更温和；中午回酒店午睡。看体力备选河川生态园。</td>
+          </tr>
+          <tr>
+            <td><strong>第5天</strong></td>
+            <td><strong>市区地标日</strong></td>
+            <td>下午–晚上</td>
+            <td>下午乘坐 <strong>鸭子船探险</strong>，之后去 <strong>鱼尾狮公园 + 滨海湾</strong> 打卡吃饭看夜景。</td>
+          </tr>
+          <tr>
+            <td><strong>第6天</strong></td>
+            <td><strong>赴民丹(第1晚)</strong></td>
+            <td>09:40 抵码头</td>
+            <td>退房去 <strong>Tanah Merah 码头</strong> 乘船；入住印尼民丹岛度假酒店，开启躺平模式。</td>
+          </tr>
+          <tr>
+            <td><strong>第7天</strong></td>
+            <td><strong>民丹(第2晚)</strong></td>
+            <td>09:30后慢启</td>
+            <td><strong>A:</strong> Treasure Bay 玩水，傍晚 Lagoi Beach 漫步。<br><strong>B备选:</strong> 包车去东海岸 Trikora Beach 或白沙岛寻找原生态海景。</td>
+          </tr>
+          <tr>
+            <td><strong>第8天</strong></td>
+            <td><strong>民丹-新-吉</strong></td>
+            <td>08:35 回程船</td>
+            <td>早班船回新加坡 ➔ 樟宜机场 ➔ 飞吉隆坡。抵达后仅安排 KLCC 晚餐。<br><span class="safe-badge">💡 规划巧思：这天全天大转移，若安排在周一可完美避开其他景点的闭馆日</span></td>
+          </tr>
+          <tr>
+            <td><strong>第9天</strong></td>
+            <td><strong>吉隆坡自然日</strong></td>
+            <td>09:30–17:30</td>
+            <td>上午 <strong>吉隆坡植物园 + 飞禽公园</strong>；午休后傍晚去 <strong>KLCC Park</strong> 玩水看双子塔。</td>
+          </tr>
+          <tr>
+            <td><strong>第10天</strong></td>
+            <td><strong>吉隆坡风土日</strong></td>
+            <td>10:00–19:30</td>
+            <td>上午 <strong>中央艺术坊 + 茨厂街</strong>；下午午睡；傍晚 <strong>甘榜峇鲁 + 莎罗马天桥</strong>。<br><span class="closed-badge">⚠️ 备选提示：若改去近郊Farm in the City(城之农场)，注意其逢周二闭园</span></td>
+          </tr>
+          <tr>
+            <td><strong>第11天</strong></td>
+            <td><strong>满载返程</strong></td>
+            <td>上午慢节奏</td>
+            <td>睡到自然醒，酒店早餐后退房去机场，不安排奔波，完美收官。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section grid">
+      <div class="card">
+        <h2>全景打卡地图 (含防迷路一键定位)</h2>
+        <p class="sub">精选三国三地共 22 个核心亲子坐标，地图组件全网秒开。</p>
+        <div id="map"></div>
+        <div class="legend">
+          <div class="tag"><span class="dot sg"></span>新加坡基点与地标</div>
+          <div class="tag"><span class="dot bintan"></span>民丹岛度假区 & 备选</div>
+          <div class="tag"><span class="dot kl"></span>吉隆坡市区与人文</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>免翻墙核心坐标清单 (全 22 点)</h2>
+        <div class="place-list">
+          
+          <div class="place-card sg">
+            <div class="place-index">1</div>
+            <div class="place-body">
+              <div class="place-name">市区酒店大本营 (例: 乌节路君悦)</div>
+              <div class="place-meta">第1-6天 · 新加坡市区</div>
+              <div class="place-note">推车友好，被商场与冷气大食代包围的最佳亲子落脚点。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.3060,103.8327&q=Grand+Hyatt+Singapore" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.3060, 103.8327');alert('坐标 1.3060, 103.8327 已复制！\n请打开高德或百度地图搜索框粘贴。')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card sg">
+            <div class="place-index">2</div>
+            <div class="place-body">
+              <div class="place-name">Jacob Ballas 儿童花园</div>
+              <div class="place-meta">第2天 · 新加坡植物园</div>
+              <div class="place-note">温和探险，寻找真实小生物（逢周一闭园）。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.3163,103.8157&q=Jacob+Ballas+Childrens+Garden" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.3163, 103.8157');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="place-card sg">
+            <div class="place-index">3</div>
+            <div class="place-body">
+              <div class="place-name">跨海缆车 (花柏山站)</div>
+              <div class="place-meta">第3天 · 前往圣淘沙</div>
+              <div class="place-note">把入岛交通本身变成一场高空观景体验。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.2707,103.8198&q=Mount+Faber+Line" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.2707, 103.8198');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card sg">
+            <div class="place-index">4</div>
+            <div class="place-body">
+              <div class="place-name">S.E.A. 海洋馆</div>
+              <div class="place-meta">第3天 · 圣淘沙岛内</div>
+              <div class="place-note">冷气护体，安静观赏深海霸主。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.2583,103.8224&q=S.E.A.+Aquarium" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.2583, 103.8224');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card sg">
+            <div class="place-index">5</div>
+            <div class="place-body">
+              <div class="place-name">新加坡动物园 (Singapore Zoo)</div>
+              <div class="place-meta">第4天 · 万礼生态区</div>
+              <div class="place-note">无铁笼环境消除动物压迫感。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.4044,103.7930&q=Singapore+Zoo" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.4044, 103.7930');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card sg">
+            <div class="place-index">6</div>
+            <div class="place-body">
+              <div class="place-name">河川生态园 (River Wonders)</div>
+              <div class="place-meta">第4天 · 万礼生态区</div>
+              <div class="place-note">看大熊猫吹冷气的备选点。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.4041,103.7959&q=River+Wonders" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.4041, 103.7959');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card sg">
+            <div class="place-index">7</div>
+            <div class="place-body">
+              <div class="place-name">鸭子船探险 (Duck Tour)</div>
+              <div class="place-meta">第5天 · 新达城出发</div>
+              <div class="place-note">水陆两栖车游览。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.2934,103.8571&q=Duck+Tours" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.2934, 103.8571');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card sg">
+            <div class="place-index">8</div>
+            <div class="place-body">
+              <div class="place-name">鱼尾狮公园</div>
+              <div class="place-meta">第5天 · 市区地标</div>
+              <div class="place-note">打卡拍照看夜景。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.2867,103.8547&q=Merlion+Park" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.2867, 103.8547');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card sg">
+            <div class="place-index">9</div>
+            <div class="place-body">
+              <div class="place-name">Tanah Merah 轮渡码头</div>
+              <div class="place-meta">第6天 · 赴民丹岛</div>
+              <div class="place-note">建议提前1.5小时抵达。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.3145,103.9887&q=Tanah+Merah+Ferry" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.3145, 103.9887');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card sg">
+            <div class="place-index">10</div>
+            <div class="place-body">
+              <div class="place-name">樟宜机场 (Changi)</div>
+              <div class="place-meta">第8天 · 飞吉隆坡</div>
+              <div class="place-note">跨国中转枢纽。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.3602,103.9894&q=Changi+Airport" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.3602, 103.9894');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card bintan">
+            <div class="place-index">11</div>
+            <div class="place-body">
+              <div class="place-name">BBT 轮渡码头</div>
+              <div class="place-meta">第6天 · 民丹岛到达点</div>
+              <div class="place-note">抵达民丹岛的港口。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.1513,104.3513&q=BBT+Ferry+Terminal" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.1513, 104.3513');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card bintan">
+            <div class="place-index">12</div>
+            <div class="place-body">
+              <div class="place-name">Treasure Bay (宝藏湾)</div>
+              <div class="place-meta">第7天 · 度假区</div>
+              <div class="place-note">人造泻湖水晶湾。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.1768,104.3440&q=Treasure+Bay+Bintan" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.1768, 104.3440');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card bintan">
+            <div class="place-index">13</div>
+            <div class="place-body">
+              <div class="place-name">Plaza Lagoi & 海滩</div>
+              <div class="place-meta">第7天 · 度假区</div>
+              <div class="place-note">踩沙看夕阳与美食。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.1780,104.3810&q=Plaza+Lagoi" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.1780, 104.3810');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card bintan">
+            <div class="place-index">14</div>
+            <div class="place-body">
+              <div class="place-name">White Sands Island (白沙岛)</div>
+              <div class="place-meta">第7天 · 东海岸备选</div>
+              <div class="place-note">原生态果冻海小岛。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.1571,104.6191&q=White+Sands+Island" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.1571, 104.6191');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card bintan">
+            <div class="place-index">15</div>
+            <div class="place-body">
+              <div class="place-name">Trikora Beach (特里科拉)</div>
+              <div class="place-meta">第7天 · 东海岸备选</div>
+              <div class="place-note">风光绝美的狭长海滩。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=1.1118,104.6062&q=Trikora+Beach" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('1.1118, 104.6062');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card kl">
+            <div class="place-index">16</div>
+            <div class="place-body">
+              <div class="place-name">Perdana Botanical Gardens</div>
+              <div class="place-meta">第9天 · 吉隆坡植物园</div>
+              <div class="place-note">市区巨大绿肺。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=3.1430,101.6841&q=Perdana+Botanical+Gardens" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('3.1430, 101.6841');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card kl">
+            <div class="place-index">17</div>
+            <div class="place-body">
+              <div class="place-name">KL Bird Park (飞禽公园)</div>
+              <div class="place-meta">第9天 · 步入式鸟园</div>
+              <div class="place-note">世界级飞禽公园。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=3.1433,101.6883&q=KL+Bird+Park" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('3.1433, 101.6883');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card kl">
+            <div class="place-index">18</div>
+            <div class="place-body">
+              <div class="place-name">KLCC Park & 双子塔</div>
+              <div class="place-meta">第9天 · 市区核心</div>
+              <div class="place-note">水景与地标夜景。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=3.1556,101.7145&q=KLCC+Park" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('3.1556, 101.7145');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card kl">
+            <div class="place-index">19</div>
+            <div class="place-body">
+              <div class="place-name">Central Market (中央艺术坊)</div>
+              <div class="place-meta">第10天 · 老城人文</div>
+              <div class="place-note">室内手工坊。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=3.1454,101.6953&q=Central+Market" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('3.1454, 101.6953');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card kl">
+            <div class="place-index">20</div>
+            <div class="place-body">
+              <div class="place-name">Chinatown (茨厂街)</div>
+              <div class="place-meta">第10天 · 华人老街</div>
+              <div class="place-note">老街与小吃。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=3.1440,101.6976&q=Petaling+Street" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('3.1440, 101.6976');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card kl">
+            <div class="place-index">21</div>
+            <div class="place-body">
+              <div class="place-name">Kampung Baru (甘榜峇鲁)</div>
+              <div class="place-meta">第10天 · 传统村落</div>
+              <div class="place-note">传统马来村落寻美食。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=3.1627,101.7041&q=Kampung+Baru" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('3.1627, 101.7041');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="place-card kl">
+            <div class="place-index">22</div>
+            <div class="place-body">
+              <div class="place-name">Saloma Bridge (莎罗马天桥)</div>
+              <div class="place-meta">第10天 · 夜景打卡</div>
+              <div class="place-note">发光天桥绝美打卡。</div>
+              <div class="place-actions">
+                <a class="btn-nav btn-apple" href="http://maps.apple.com/?ll=3.1614,101.7088&q=Saloma+Link" target="_blank"> 苹果地图</a>
+                <span class="btn-nav btn-copy" onclick="navigator.clipboard.writeText('3.1614, 101.7088');alert('坐标已复制')">📋 复制坐标</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="section footer">
+      注：本文所有地图组件及资源库均适配国内网络，支持无障碍秒开。
+    </section>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script>
+    const map = L.map('map', { zoomControl: true });
+    
+    // 替换为国内加载极快、无需翻墙的 CartoDB 英文底图
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+      subdomains: 'abcd',
+      attribution: '© OpenStreetMap & © CARTO'
+    }).addTo(map);
+
+    function iconHtml(cls, label) {
+      return `<div class="marker ${cls}"><span>${label}</span></div>`;
+    }
+
+    function addMarker(lat, lon, cls, label, popupTitle, popupDesc) {
+      const icon = L.divIcon({
+        className: '',
+        html: iconHtml(cls, label),
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
+        popupAnchor: [0, -28]
+      });
+      const marker = L.marker([lat, lon], {icon}).addTo(map);
+      marker.bindPopup(`
+        <div style="min-width:180px">
+          <div style="font-weight:700;margin-bottom:4px;color:#111827">${popupTitle}</div>
+          <div style="font-size:13px;line-height:1.45;color:#4b5563">${popupDesc}</div>
+        </div>
+      `);
+      return marker;
+    }
+
+    // SG Locations
+    addMarker(1.3060, 103.8327, "sg", "1", "市区大本营", "乌节路酒店群");
+    addMarker(1.3163, 103.8157, "sg", "2", "Jacob Ballas 儿童花园", "自然温和探险");
+    addMarker(1.2707, 103.8198, "sg", "3", "跨海缆车 (花柏山站)", "空中入岛体验");
+    addMarker(1.2583, 103.8224, "sg", "4", "S.E.A. 海洋馆", "冷气护体避暑");
+    addMarker(1.4044, 103.7930, "sg", "5", "新加坡动物园", "无铁笼生态观察");
+    addMarker(1.4041, 103.7959, "sg", "6", "河川生态园", "看大熊猫吹冷气");
+    addMarker(1.2934, 103.8571, "sg", "7", "鸭子船探险", "水陆两栖城市游");
+    addMarker(1.2867, 103.8547, "sg", "8", "鱼尾狮公园 & 滨海湾", "地标散步夜景");
+    addMarker(1.3145, 103.9887, "sg", "9", "Tanah Merah 轮渡码头", "出发民丹岛");
+    addMarker(1.3602, 103.9894, "sg", "10", "新加坡樟宜机场", "转机飞吉隆坡");
+
+    // Bintan Locations
+    addMarker(1.1513, 104.3513, "bintan", "11", "BBT 轮渡码头", "抵达民丹岛");
+    addMarker(1.1768, 104.3440, "bintan", "12", "Treasure Bay", "水晶湾玩水");
+    addMarker(1.1780, 104.3810, "bintan", "13", "Plaza Lagoi & 海滩", "沙滩漫步与美食");
+    addMarker(1.1571, 104.6191, "bintan", "14", "White Sands Island", "东海岸果冻海");
+    addMarker(1.1118, 104.6062, "bintan", "15", "Trikora Beach", "绝美本土海滩");
+
+    // KL Locations
+    addMarker(3.1430, 101.6841, "kl", "16", "Perdana Botanical Gardens", "市区巨大绿肺");
+    addMarker(3.1433, 101.6883, "kl", "17", "KL Bird Park", "世界级飞禽公园");
+    addMarker(3.1556, 101.7145, "kl", "18", "KLCC Park & 双子塔", "水景与夜景");
+    addMarker(3.1454, 101.6953, "kl", "19", "Central Market", "手工艺术坊");
+    addMarker(3.1440, 101.6976, "kl", "20", "Chinatown (茨厂街)", "老街与小吃");
+    addMarker(3.1627, 101.7041, "kl", "21", "Kampung Baru", "传统马来村落");
+    addMarker(3.1614, 101.7088, "kl", "22", "Saloma Bridge", "发光天桥打卡");
+
+    // Fit Bounds
+    const bounds = L.latLngBounds([
+      [3.1627, 101.7041],  // KL North
+      [1.4044, 103.7930],  // SG
+      [1.1118, 104.6191]   // Bintan South-East
+    ]);
+    map.fitBounds(bounds.pad(0.1));
+  </script>
+</body>
+</html>
