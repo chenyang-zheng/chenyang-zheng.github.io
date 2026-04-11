@@ -26,6 +26,19 @@
       <h1 class="f1 athelas mt3 mb1">
         {{- .Title -}}
       </h1>
+      {{/* WeChat format link — only show for published posts */}}
+      {{ if not .Draft }}
+      {{ with .OutputFormats.Get "wechat" }}
+      <p class="f6 mt1 mb0">
+        <a href="{{ .RelPermalink }}"
+           title="查看微信公众号排版预览"
+           style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid #07c160;border-radius:12px;color:#07c160;text-decoration:none;font-size:12px;font-weight:600;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          微信版
+        </a>
+      </p>
+      {{ end }}
+      {{ end }}
       {{ with .Params.author | compare.Default .Site.Params.author }}
       <p class="tracked">
         {{- if compare.Eq $page.Language "de" "en" "es" "fr" "it" "no" "pt" -}}

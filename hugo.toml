@@ -3,6 +3,18 @@ languageCode = 'en-us'
 title = "Chenyang's Eureka"
 theme = 'ananke'
 
+[outputFormats.wechat]
+  name          = "wechat"
+  mediaType     = "text/html"
+  path          = "wechat"
+  isHTML        = true
+  notAlternative = true
+
+[outputs]
+  page    = ["HTML", "wechat"]
+  section = ["HTML"]
+  home    = ["HTML", "RSS"]
+
 [params]
 mainSections = ['posts']
 

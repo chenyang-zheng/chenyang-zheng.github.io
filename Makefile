@@ -39,3 +39,5 @@ help:
 	@echo "  make serve        本地预览（含草稿）"
 	@echo "  make build        构建生产版本"
 	@echo ""
+	@echo "微信发布：访问文章页点击「微信版」按钮，在预览页复制内容后粘贴到公众号编辑器"
+	@echo ""
