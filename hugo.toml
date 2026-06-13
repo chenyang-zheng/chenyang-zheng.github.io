@@ -17,6 +17,7 @@ theme = 'ananke'
 
 [params]
 mainSections = ['posts']
+license = 'cc-by-nc-sa'
 
 [[menu.main]]
 name = 'Posts'

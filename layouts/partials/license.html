@@ -1,0 +1,43 @@
+{{/*
+  版权 / 转载声明 footer。
+  由 front matter（或 site params）的 `license` 字段控制，未设置则不输出。
+  取值：
+    cc-by-nc-sa  署名-非商业-相同方式共享（默认，推荐）
+    cc-by-nc-nd  署名-非商业-禁止演绎
+    cc-by-sa     署名-相同方式共享
+    cc-by        署名
+    noreprint / all-rights-reserved  保留所有权利，禁止转载
+  调用：
+    网页版    {{ partial "license.html" . }}
+    微信版    {{ partial "license.html" (dict "page" . "mode" "wechat") }}
+*/}}
+{{- $page := . -}}
+{{- $mode := "web" -}}
+{{- if reflect.IsMap . -}}
+  {{- $page = .page -}}
+  {{- $mode = .mode | default "web" -}}
+{{- end -}}
+{{- $license := $page.Param "license" -}}
+{{- if eq $license true -}}{{- $license = "cc-by-nc-sa" -}}{{- end -}}
+{{- if or (eq $license false) (eq $license "none") -}}{{- $license = "" -}}{{- end -}}
+{{- if $license -}}
+  {{- $author := $page.Params.author | default $page.Site.Params.author | default "Chenyang Zheng" -}}
+  {{- $url := $page.Permalink -}}
+  {{- $isNoReprint := or (eq $license "noreprint") (eq $license "all-rights-reserved") -}}
+  {{- $deed := "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" -}}
+  {{- $name := "CC BY-NC-SA 4.0" -}}
+  {{- if eq $license "cc-by" -}}{{- $deed = "https://creativecommons.org/licenses/by/4.0/deed.zh" -}}{{- $name = "CC BY 4.0" -}}{{- end -}}
+  {{- if eq $license "cc-by-sa" -}}{{- $deed = "https://creativecommons.org/licenses/by-sa/4.0/deed.zh" -}}{{- $name = "CC BY-SA 4.0" -}}{{- end -}}
+  {{- if eq $license "cc-by-nc-nd" -}}{{- $deed = "https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" -}}{{- $name = "CC BY-NC-ND 4.0" -}}{{- end -}}
+  <section style="margin-top:2.5rem;padding:1rem 1.2rem;border-left:4px solid #07c160;background:#f6f8fa;border-radius:0 6px 6px 0;font-size:.85rem;line-height:1.8;color:#57606a;">
+    <strong style="color:#1a1a1a;">版权声明</strong><br>
+    {{- if $isNoReprint }}
+    本文为 {{ $author }} 原创，著作权归作者所有。未经授权，禁止任何形式的转载。<br>
+    原文链接：{{ if eq $mode "wechat" }}{{ $url }}{{ else }}<a href="{{ $url }}" style="color:#07c160;text-decoration:none;">{{ $url }}</a>{{ end }}
+    {{- else }}
+    本文为 {{ $author }} 原创，采用 {{ if eq $mode "wechat" }}{{ $name }}{{ else }}<a href="{{ $deed }}" style="color:#07c160;text-decoration:none;">{{ $name }}</a>{{ end }} 许可协议。<br>
+    转载请注明作者与原文出处。<br>
+    原文链接：{{ if eq $mode "wechat" }}{{ $url }}{{ else }}<a href="{{ $url }}" style="color:#07c160;text-decoration:none;">{{ $url }}</a>{{ end }}
+    {{- end }}
+  </section>
+{{- end -}}
