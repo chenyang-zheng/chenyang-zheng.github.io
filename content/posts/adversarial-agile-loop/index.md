@@ -136,13 +136,13 @@ Planner <-> Evaluator -> Generator <-> Evaluator
 | **R_coverage** | | **真实成果 + 剩余计划**，还能达成阶段目标吗？ | | 按真实产出算（而非计划「本该产出」），可能已经凑不齐 |
 
 
-### - 明日边缘场景
+### - 明日边缘:当航线本身就错了
+
+盟军的作战计划,就是图里上排那条线性航线:登陆法国海滩 → 建立滩头 → 向内陆推进收复欧洲 → 最终消灭Omega。比尔在这条航线上一次次重来——正面反攻这条路从结构上就通不到Omega
+
 ![明日边缘](eot_flow.png)
 
-```text
-sprint-goal → user story
-```
-
+转机不在他打得更好,而在反复重生让他攒下几条写给规划层的约束: 正面战线永无止尽，Omega会重置时间。规划层据此剪枝改道:放弃正面战争,改成 2′ 摸清时间重置机制 → 3′ 定位 Omega 真身 → 4′ 直插消灭它——这条新航线才真正指向终点。这正是规划层在R_coverage不通过时做的事:不是再试一次,而是调整航线。
 
 ### 评估器：用反向还原进行归因
 前面提过，一个重要的环节是生成器和评估器的对抗式收敛，而不是盲目试错。
@@ -203,7 +203,3 @@ Reference:
 6. https://www.langchain.com/blog/agent-evaluation-readiness-checklist
 7. https://github.com/bytedance/deer-flow/tree/main/docs
 8. https://ghuntley.com/ralph/
-
-TODO:
-- 执行层和规划层的架构图中术语与文章保持一致，比如sprint-goal/评估器...
-- 文章格式可视化的优化
