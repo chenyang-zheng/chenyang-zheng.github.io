@@ -2,6 +2,9 @@ baseURL = 'https://chenyang-zheng.github.io/'
 languageCode = 'en-us'
 title = "Chenyang's Eureka"
 theme = 'ananke'
+# Count CJK characters when computing word count / reading time,
+# otherwise Chinese text is counted by whitespace and drastically undercounted.
+hasCJKLanguage = true
 
 [outputFormats.wechat]
   name          = "wechat"
@@ -18,6 +21,7 @@ theme = 'ananke'
 [params]
 mainSections = ['posts']
 license = 'cc-by-nc-sa'
+show_reading_time = true
 
 [[menu.main]]
 name = 'Posts'

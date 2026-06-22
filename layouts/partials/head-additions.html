@@ -1,0 +1,28 @@
+{{/* Article body styled like Medium (Source Serif Pro). Titles + meta keep the theme defaults. */}}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+  :root {
+    --font-serif: 'Source Serif Pro', Georgia, Cambria, 'Times New Roman', serif;
+    --ink: #242424;   /* Medium's near-black body text */
+  }
+
+  /* Article body (ananke uses .serif for post content) → Medium-like reading rhythm */
+  article .serif {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;        /* ~20px */
+    line-height: 1.58;
+    letter-spacing: -0.003em;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Generous paragraph spacing like Medium */
+  article .serif p,
+  article .serif ul,
+  article .serif ol,
+  article .serif blockquote { margin: 1.9rem 0 0; }
+  article .serif > :first-child { margin-top: 0; }
+</style>
