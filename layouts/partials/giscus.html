@@ -1,0 +1,30 @@
+{{/*
+  Giscus comments + reactions (👍 likes), backed by GitHub Discussions.
+  Config-driven: all values come from hugo.toml -> [params.giscus].
+  Renders nothing until `repo` and `repo_id` are set, so it is safe to commit early.
+  Portable: the embed does not depend on where the site is hosted (GitHub Pages or a
+  standalone site), and `pathname` mapping keeps comment threads stable across migration.
+*/}}
+{{- with .Site.Params.giscus -}}
+  {{- $repo := index . "repo" -}}
+  {{- $repoID := index . "repo_id" -}}
+  {{- $categoryID := index . "category_id" -}}
+  {{- if and $repo $repoID $categoryID -}}
+  <div class="giscus mt4"></div>
+  <script src="https://giscus.app/client.js"
+          data-repo="{{ $repo }}"
+          data-repo-id="{{ $repoID }}"
+          data-category="{{ index . "category" | default "Comments" }}"
+          data-category-id="{{ index . "category_id" }}"
+          data-mapping="{{ index . "mapping" | default "pathname" }}"
+          data-strict="{{ index . "strict" | default "0" }}"
+          data-reactions-enabled="{{ index . "reactions" | default "1" }}"
+          data-emit-metadata="0"
+          data-input-position="{{ index . "input_position" | default "bottom" }}"
+          data-theme="{{ index . "theme" | default "light" }}"
+          data-lang="{{ index . "lang" | default "zh-CN" }}"
+          crossorigin="anonymous"
+          async>
+  </script>
+  {{- end -}}
+{{- end -}}

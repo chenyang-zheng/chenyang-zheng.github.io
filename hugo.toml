@@ -23,6 +23,20 @@ mainSections = ['posts']
 license = 'cc-by-nc-sa'
 show_reading_time = true
 
+# Giscus 评论 + 点赞（GitHub Discussions 后端）。
+# 在 https://giscus.app 生成后填入下面 4 个值；仓库需 public、开启 Discussions、安装 giscus app。
+# repo 和 repo_id 任一为空时，评论区不渲染（可安全提交）。
+[params.giscus]
+  repo = "chenyang-zheng/chenyang-zheng.github.io"
+  repo_id = "R_kgDOMqEr_A"  # giscus.app 生成的 data-repo-id
+  category = "Announcements" # Discussion 分类名（Announcements 类型，防访客乱建）
+  category_id = "DIC_kwDOMqEr_M4C_qOX" # giscus.app 生成的 data-category-id
+  mapping = "pathname"      # 每篇文章按 URL 路径对应一个 Discussion（迁移友好）
+  reactions = "1"           # 1 = 开启 👍 点赞
+  input_position = "bottom"
+  theme = "light"
+  lang = "zh-CN"
+
 [[menu.main]]
 name = 'Posts'
 url = '/posts/'

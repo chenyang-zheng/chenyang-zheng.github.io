@@ -78,6 +78,7 @@
       {{ if .Site.Params.commentoEnable }}
         {{- partials.Include "commento.html" . -}}
       {{ end }}
+      {{- partials.Include "giscus.html" . -}}
       </div>
     </div>
     {{- if $needs_aside -}}
