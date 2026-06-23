@@ -23,6 +23,12 @@ mainSections = ['posts']
 license = 'cc-by-nc-sa'
 show_reading_time = true
 
+# Cloudflare Web Analytics beacon token —— 不在仓库里保存。
+# 通过 GitHub Actions secret `CF_BEACON_TOKEN` 在构建时注入
+# （workflow 里导出为 HUGO_PARAMS_CFBEACON -> .Site.Params.cfbeacon）。
+# 本地预览留空即可（不渲染 beacon）。请勿在此填入真实 token。
+# cfbeacon = ""
+
 # Giscus 评论 + 点赞（GitHub Discussions 后端）。
 # 在 https://giscus.app 生成后填入下面 4 个值；仓库需 public、开启 Discussions、安装 giscus app。
 # repo 和 repo_id 任一为空时，评论区不渲染（可安全提交）。

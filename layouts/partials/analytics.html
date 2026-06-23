@@ -1,0 +1,16 @@
+{{/*
+  Cloudflare Web Analytics beacon (track-only, no on-page display).
+  The token is injected at BUILD TIME from the GitHub Actions secret CF_BEACON_TOKEN
+  (the workflow exports it as HUGO_PARAMS_CFBEACON -> .Site.Params.cfbeacon), so it is
+  never committed to the repository.
+  Gated by hugo.IsProduction: local `hugo server` (development) won't load the beacon,
+  so local browsing never pollutes the stats.
+  Note: this token still appears in the published HTML by design (client-side beacon);
+  build-time injection only keeps it out of git history, not out of public view.
+*/}}
+{{- if hugo.IsProduction -}}
+  {{- with .Site.Params.cfbeacon -}}
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "{{ . }}"}'></script>
+  {{- end -}}
+{{- end -}}

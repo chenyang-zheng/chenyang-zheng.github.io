@@ -43,6 +43,7 @@ jobs:
         env:
           HUGO_ENVIRONMENT: production
           HUGO_ENV: production
+          HUGO_PARAMS_CFBEACON: ${{ secrets.CF_BEACON_TOKEN }}
         run: |
           hugo --gc --minify
 
