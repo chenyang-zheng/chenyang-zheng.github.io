@@ -1,24 +1,86 @@
 #!/usr/bin/env bash
-# pre-push hook: run content metadata checker before pushing to remote.
+# pre-push hook: 推送前的发布硬约束门禁（仅检查本次推送改动的文章）。
 #
-# Installed via: git config core.hooksPath .githooks
-# Or:            make setup-hooks
+# 安装：git config core.hooksPath .githooks  /  make setup-hooks
 
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-CHECKER="$REPO_ROOT/scripts/check_content.py"
+ZERO_SHA="0000000000000000000000000000000000000000"
 
-echo "🔍 检查 Hugo 文章元数据..."
+# pre-push 的 ref 更新从 stdin 读入，只能读一次，先整体捕获再多次取用。
+STDIN_REFS="$(cat)"
+
+# 列出某次推送范围内改动到的 content/*.md（去掉 draft grep 与否由调用者过滤）。
+collect_changed_content_md() {
+    while read -r local_ref local_sha remote_ref remote_sha; do
+        [ -z "${local_sha:-}" ] && continue
+        [ "$local_sha" = "$ZERO_SHA" ] && continue
+        if [ "$remote_sha" = "$ZERO_SHA" ]; then
+            git diff-tree --no-commit-id --name-only -r "$local_sha" -- content
+        else
+            git diff --name-only "${remote_sha}..${local_sha}" -- content
+        fi
+    done <<< "$STDIN_REFS" | { grep -E '\.md$' || true; } | sort -u
+}
+
+# 在改动的 md 中，挑出推送版本里 draft = true 的（文件可能在工作区已改动，故看推送版本）。
+collect_draft_files() {
+    collect_changed_content_md | while IFS= read -r path; do
+        [ -z "$path" ] && continue
+        while read -r _lr local_sha _rr _rs; do
+            [ "${local_sha:-$ZERO_SHA}" = "$ZERO_SHA" ] && continue
+            if git cat-file -e "${local_sha}:${path}" 2>/dev/null \
+               && git show "${local_sha}:${path}" \
+                  | grep -Eq '^[[:space:]]*draft[[:space:]]*=[[:space:]]*true[[:space:]]*$'; then
+                printf '%s\n' "$path"
+                break
+            fi
+        done <<< "$STDIN_REFS"
+    done | sort -u
+}
+
+# ── 1. 草稿确认 ─────────────────────────────────────────────────────────────
+draft_files="$(collect_draft_files)"
+
+if [ -n "$draft_files" ]; then
+    echo "⚠️  本次推送包含 draft = true 的文章："
+    echo ""
+    while IFS= read -r path; do
+        [ -z "$path" ] && continue
+        echo "  - $path"
+    done <<< "$draft_files"
+    echo ""
+    printf "继续推送到远端仓库吗？[y/N] "
+    read -r answer < /dev/tty || answer="n"
+    case "$answer" in
+        y|Y|yes|YES) echo "" ; echo "已确认，继续执行检查..." ;;
+        *) echo "" ; echo "❌ 已取消推送。请先移除这些 draft 文件，或确认后再次推送。" ; exit 1 ;;
+    esac
+fi
+
+# ── 2. 硬约束门禁（仅改动文章）────────────────────────────────────────────────
+changed_md="$(collect_changed_content_md)"
+if [ -z "$changed_md" ]; then
+    echo "✓ 本次推送无文章改动，跳过内容检查。"
+    exit 0
+fi
+
+echo "🔍 检查改动的文章（pregate 硬约束）..."
 echo ""
 
-if ! python3 "$CHECKER"; then
+files=()
+while IFS= read -r path; do
+    [ -z "$path" ] && continue
+    files+=("$REPO_ROOT/$path")
+done <<< "$changed_md"
+
+if ! PYTHONPATH="$REPO_ROOT" python3 -m scripts.publish.pregate "${files[@]}"; then
     echo ""
-    echo "❌ 推送被拦截：请先补全必填元数据字段。"
-    echo "   提示：运行 'python3 scripts/check_content.py --fix' 可自动补全默认值。"
+    echo "❌ 推送被拦截：请先修复上面的硬伤。"
     exit 1
 fi
 
 echo ""
-echo "✅ 元数据检查通过，继续推送..."
+echo "✅ 检查通过，继续推送..."
 exit 0

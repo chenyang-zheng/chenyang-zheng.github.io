@@ -7,3 +7,5 @@ nohup.out
 drafts/
 *.swp
 *.swo
+__pycache__/
+*.pyc

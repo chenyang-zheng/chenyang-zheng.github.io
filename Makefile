@@ -1,6 +1,6 @@
 # Makefile for chenyang-zheng.github.io Hugo site
 
-.PHONY: check fix drafts serve build setup-hooks help
+.PHONY: check fix drafts preflight preflight-all serve build setup-hooks help
 
 ## 安装 git hooks（首次 clone 后执行一次）
 setup-hooks:
@@ -20,6 +20,14 @@ fix:
 drafts:
 	python3 scripts/check_content.py --drafts
 
+## 发布硬约束门禁：仅检查改动的文章（同 pre-push）
+preflight:
+	python3 -m scripts.publish.pregate
+
+## 发布硬约束门禁：全量体检
+preflight-all:
+	python3 -m scripts.publish.pregate --all
+
 ## 本地预览（含草稿）
 serve:
 	hugo server -D --bind 0.0.0.0
@@ -36,6 +44,8 @@ help:
 	@echo "  make check        检查所有已发布文章的元数据"
 	@echo "  make fix          自动补全缺失的元数据字段"
 	@echo "  make drafts       列出所有草稿和问题文章"
+	@echo "  make preflight    硬约束门禁：仅查改动的文章"
+	@echo "  make preflight-all 硬约束门禁：全量体检"
 	@echo "  make serve        本地预览（含草稿）"
 	@echo "  make build        构建生产版本"
 	@echo ""
