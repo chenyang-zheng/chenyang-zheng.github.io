@@ -3,6 +3,8 @@
 > Claude 从仓库现状反推的偏好初稿，**待作者定稿**。
 > 性能 Agent 调用确定性工具（图片体积扫描、`compress_image.py`、将来的 Lighthouse），
 > 在工具结果之上解读与排序，对照本文件给优先级化的优化建议。
+>
+> **判断 vs 执行**：perf agent 在评审回路里**只读不写**——跑 `python3 compress_image.py --check`（preflight）看该压哪些、配合宪法给"压不压 / 限多宽 / 画质够不够"的判断。**实际转换是确定性动作**，由 pre-commit 被动跑或作者手动 `make webp`，不由 agent 改文件。
 
 ## 图片（最大的体积来源）
 - 正文配图优先 **webp**；源图（png/jpg）若已有最新 webp 兄弟，应改引用而非两份都上线。
