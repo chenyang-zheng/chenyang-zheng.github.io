@@ -14,17 +14,12 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from . import frontmatter
+from . import fields, frontmatter
 
 # ── 阈值（将来可挪到 config.toml）──────────────────────────────────────────
 IMAGE_MAX_BYTES = 1024 * 1024  # 单图 1MB
 
-# 各 section 的必填字段（与原 check_content.py 对齐）
-REQUIRED_FIELDS: dict[str, list[str]] = {
-    "posts":   ["title", "date", "lastmod", "draft", "slug",
-                "description", "summary", "tags", "categories"],
-    "default": ["title", "date", "draft"],
-}
+# 字段口径单一事实源见 fields.py
 
 ERROR = "error"
 WARN  = "warn"
@@ -85,9 +80,11 @@ def check_required_fields(path: Path, text: str, meta: dict | None,
     if meta is None or meta.get("draft") is True:
         return []
     section = _section(path, content_dir)
-    required = REQUIRED_FIELDS.get(section, REQUIRED_FIELDS["default"])
-    return [Issue(ERROR, "missing-field", f"缺少必填字段：'{f}'")
-            for f in required if f not in meta]
+    issues = [Issue(ERROR, "missing-field", f"缺少必填字段：'{f}'")
+              for f in fields.required_for(section) if f not in meta]
+    issues += [Issue(WARN, "missing-recommended", f"建议补全字段：'{f}'")
+               for f in fields.recommended_for(section) if f not in meta]
+    return issues
 
 
 def check_dead_local_images(path: Path, text: str, meta: dict | None) -> list[Issue]:

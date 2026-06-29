@@ -1,32 +1,32 @@
 # Makefile for chenyang-zheng.github.io Hugo site
 
-.PHONY: check fix drafts preflight preflight-all serve build setup-hooks help
+.PHONY: check preflight webp webp-check review serve build setup-hooks help
 
 ## 安装 git hooks（首次 clone 后执行一次）
 setup-hooks:
 	git config core.hooksPath .githooks
-	chmod +x .githooks/pre-push
-	@echo "✅ git hooks 已配置，pre-push 检查已启用"
+	chmod +x .githooks/pre-push .githooks/pre-commit
+	@echo "✅ git hooks 已配置：pre-commit（图片转 webp）+ pre-push（硬约束）"
 
-## 检查所有已发布文章的元数据
+## 全局状态：全量扫描 + 草稿清单（平时体检，不绑定单次发布）
 check:
-	python3 scripts/check_content.py
-
-## 检查并自动补全缺失字段（使用默认占位值）
-fix:
-	python3 scripts/check_content.py --fix
-
-## 检查所有文章（包括草稿）
-drafts:
-	python3 scripts/check_content.py --drafts
+	python3 -m scripts.publish.pregate --all
 
 ## 发布硬约束门禁：仅检查改动的文章（同 pre-push）
 preflight:
 	python3 -m scripts.publish.pregate
 
-## 发布硬约束门禁：全量体检
-preflight-all:
-	python3 -m scripts.publish.pregate --all
+## 批量把 content/ 缺失/过期的栅格图转成 webp（检查通过的才转，保留原图）
+webp:
+	python3 compress_image.py
+
+## 只跑压缩检查：列出该压哪些 + 原因，不写文件
+webp-check:
+	python3 compress_image.py --check
+
+## 内容宪法审稿（LLM，建议性，不阻塞）。FILE=指定文章，留空则审改动的文章
+review:
+	bash scripts/publish/review.sh $(FILE)
 
 ## 本地预览（含草稿）
 serve:
@@ -40,12 +40,12 @@ build:
 help:
 	@echo ""
 	@echo "可用命令："
-	@echo "  make setup-hooks  首次配置：安装 pre-push git hook"
-	@echo "  make check        检查所有已发布文章的元数据"
-	@echo "  make fix          自动补全缺失的元数据字段"
-	@echo "  make drafts       列出所有草稿和问题文章"
+	@echo "  make setup-hooks  首次配置：安装 git hooks（pre-commit 转 webp + pre-push 门禁）"
+	@echo "  make check        全局状态：全量扫描 + 草稿清单"
 	@echo "  make preflight    硬约束门禁：仅查改动的文章"
-	@echo "  make preflight-all 硬约束门禁：全量体检"
+	@echo "  make webp         批量转 webp（检查通过的才转，保留原图）"
+	@echo "  make webp-check   只跑压缩检查：列出该压哪些，不写文件"
+	@echo "  make review       内容宪法审稿（LLM，建议性）；FILE=指定文章"
 	@echo "  make serve        本地预览（含草稿）"
 	@echo "  make build        构建生产版本"
 	@echo ""

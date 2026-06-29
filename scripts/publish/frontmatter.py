@@ -1,7 +1,6 @@
 """共享的 Hugo TOML frontmatter 解析。
 
-从原 scripts/check_content.py 抽出，供 pregate、check_content 及未来的
-Agent 工具复用，避免各处各写一份解析逻辑（单一职责）。
+供 pregate、checks 及未来的 Agent 工具复用，避免各处各写一份解析逻辑（单一职责）。
 
 只做"够用"的解析：frontmatter 里我们关心的都是标量 / 字符串数组，
 不需要完整 TOML 实现。

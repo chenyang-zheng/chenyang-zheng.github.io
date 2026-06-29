@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# pre-commit: 被动把暂存区里 content/ 的栅格图转成 webp，并一并纳入本次提交。
+#
+# 放在 commit 阶段（而非 pre-push）才能让生成的 .webp 进入本次提交——pre-push 在
+# commit 之后跑，那时现转的文件不在被推送的提交里。
+# 不改 Markdown 引用（pregate 的 use-webp 警告会提醒把 .png 引用改成 .webp）。
+#
+# 安装：git config core.hooksPath .githooks  /  make setup-hooks
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# 暂存区里新增 / 改动的 content 栅格图（跳过 drafts）。macOS 自带 bash 3.2，不用 mapfile。
+staged_imgs=()
+while IFS= read -r f; do
+    [ -n "$f" ] && staged_imgs+=("$REPO_ROOT/$f")
+done < <(
+    git -C "$REPO_ROOT" diff --cached --name-only --diff-filter=ACM -- content \
+        | grep -Ei '\.(png|jpe?g)$' | grep -v '/drafts/' || true
+)
+
+[ "${#staged_imgs[@]}" -eq 0 ] && exit 0
+
+echo "🖼️  pre-commit：把暂存的栅格图转为 webp..."
+python3 "$REPO_ROOT/compress_image.py" "${staged_imgs[@]}"
+
+# 生成的 .webp 一并加入本次提交
+for img in "${staged_imgs[@]}"; do
+    webp="${img%.*}.webp"
+    [ -f "$webp" ] && git -C "$REPO_ROOT" add "$webp"
+done
+
+echo "✅ webp 已生成并加入提交（原图保留；记得把正文 .png 引用改成 .webp）。"
+exit 0

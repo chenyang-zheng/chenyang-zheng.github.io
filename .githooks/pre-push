@@ -82,5 +82,15 @@ if ! PYTHONPATH="$REPO_ROOT" python3 -m scripts.publish.pregate "${files[@]}"; t
 fi
 
 echo ""
-echo "✅ 检查通过，继续推送..."
+echo "✅ 硬约束检查通过，继续推送..."
+
+# 内容宪法审稿是建议性的 LLM 步骤，不在 pre-push 硬拦（慢 / 要联网 / 可能误报）。
+# 这里只做非阻塞提醒；要审就手动跑 make review。
+echo ""
+echo "💡 提醒：以下文章可在发布前做内容审稿（建议性，不阻塞推送）："
+while IFS= read -r path; do
+    [ -z "$path" ] && continue
+    echo "     make review FILE=$path"
+done <<< "$changed_md"
+
 exit 0
